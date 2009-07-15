@@ -1,2 +1,3 @@
 C:\Emergence\Emergence\Emergence\Content\obj\x86\Debug\ResolveAssemblyReference.cache
 C:\Emergence\Emergence Source\Emergence\Content\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\Deacon\Desktop\Emergence\Emergence\Content\obj\x86\Debug\ResolveAssemblyReference.cache

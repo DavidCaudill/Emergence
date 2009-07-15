@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Net;
 using Microsoft.Xna.Framework.Storage;
+using TomShane.Neoforce.Controls;
 
 namespace Emergence
 {
@@ -22,6 +23,8 @@ namespace Emergence
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         PrimitiveBatch primitiveBatch;
+        EmergenceGui Gui;
+        Manager manager;
 
         DNA dna1;
         Symet symet1;
@@ -30,6 +33,13 @@ namespace Emergence
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            // Basic setup of the game window.
+            IsMouseVisible = true;
+            IsFixedTimeStep = false;
+            graphics.SynchronizeWithVerticalRetrace = false;
+            manager = new Manager(this, graphics, "Default", true);
+            manager.SkinDirectory = @"Content\Skins\";
+            Gui = new EmergenceGui();
         }
 
         /// <summary>
@@ -62,8 +72,9 @@ namespace Emergence
 
             symet1 = dna1.BuildDNA();
             symet1.Position = new Vector2(300);
-
+            Gui.GuiInitialize(manager, graphics);
             base.Initialize();
+            
         }
 
         /// <summary>
