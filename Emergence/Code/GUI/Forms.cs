@@ -259,20 +259,11 @@ namespace Emergence
             manager.Add(wndSettings);
         }
 
-        public void GuiUpdate(GameTime gameTime)
-        {
-
-        }
-
         public void btnSettings_Click(object sender, MouseEventArgs e)
         {
             wndSettings.Visible = true;
         }
 
-        public void GuiDraw(GameTime gameTime)
-        {
-
-        }
 
     }
 }

@@ -1,6 +1,6 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
-    <ProjectGuid>{17C00D9A-BECC-455C-BF3B-02624758270C}</ProjectGuid>
+    <ProjectGuid>{7932EED9-17FE-48C3-AFDB-7FB1A25DCA11}</ProjectGuid>
     <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -9,9 +9,9 @@
     <RootNamespace>Emergence</RootNamespace>
     <AssemblyName>Emergence</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <XnaFrameworkVersion>v3.1</XnaFrameworkVersion>
+    <XnaFrameworkVersion>v3.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
-    <XnaCrossPlatformGroupID>d4e50e67-608f-498d-b709-55ca406f8fb7</XnaCrossPlatformGroupID>
+    <XnaCrossPlatformGroupID>34af373b-a642-49b1-bd6f-a36e00e51c5c</XnaCrossPlatformGroupID>
     <ApplicationIcon>Game.ico</ApplicationIcon>
     <Thumbnail>GameThumbnail.png</Thumbnail>
     <PublishUrl>publish\</PublishUrl>
@@ -56,11 +56,11 @@
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Xna.Framework, Version=3.1.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=x86">
+    <Reference Include="Microsoft.Xna.Framework, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=x86">
       <Private>False</Private>
       <SpecificVersion>True</SpecificVersion>
     </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Game, Version=3.1.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.Xna.Framework.Game, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL">
       <Private>False</Private>
       <SpecificVersion>True</SpecificVersion>
     </Reference>
@@ -90,7 +90,7 @@
     <Compile Include="Code\Graphics\BoundingRectangle.cs" />
     <Compile Include="Code\Graphics\PrimitiveBatch.cs" />
     <Compile Include="Code\Graphics\PrimitiveShape.cs" />
-    <Compile Include="Code\GUI\Forms.cs" />
+    <Compile Include="Code\Gui\Forms.cs" />
     <Compile Include="Code\Main.cs" />
     <Compile Include="Code\Program.cs" />
     <Compile Include="Code\Symet\Arm.cs" />
@@ -106,7 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <NestedContentProject Include="Content\Content.contentproj">
-      <Project>847d5e55-573b-4ee8-95f9-6b73366e5a1b</Project>
+      <Project>6db4b47e-2db2-4dc0-a249-970f33cce231</Project>
       <Visible>False</Visible>
     </NestedContentProject>
   </ItemGroup>
@@ -141,14 +141,11 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Xna.Framework.3.1">
+    <BootstrapperPackage Include="Microsoft.Xna.Framework.3.0">
       <Visible>False</Visible>
-      <ProductName>Microsoft XNA Framework Redistributable 3.1</ProductName>
+      <ProductName>Microsoft XNA Framework Redistributable 3.0</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

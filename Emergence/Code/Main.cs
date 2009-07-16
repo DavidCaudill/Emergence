@@ -14,9 +14,6 @@ using TomShane.Neoforce.Controls;
 
 namespace Emergence
 {
-    /// <summary>
-    /// This is the main type for your game
-    /// </summary>
 
     public class Game1 : Microsoft.Xna.Framework.Game
     {
@@ -33,21 +30,14 @@ namespace Emergence
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            // Basic setup of the game window.
+            graphics.PreferredBackBufferWidth = 1027;
+            graphics.PreferredBackBufferHeight = 768;
             IsMouseVisible = true;
             IsFixedTimeStep = false;
             graphics.SynchronizeWithVerticalRetrace = false;
-            manager = new Manager(this, graphics, "Default", true);
-            manager.SkinDirectory = @"Content\Skins\";
             Gui = new EmergenceGui();
         }
 
-        /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
-        /// </summary>
         protected override void Initialize()
         {
             dna1 = new DNA(Shape.Triangle, 50.0f);
@@ -72,38 +62,28 @@ namespace Emergence
 
             symet1 = dna1.BuildDNA();
             symet1.Position = new Vector2(300);
-            Gui.GuiInitialize(manager, graphics);
+            manager = new Manager(this, graphics, "Default", false);
+            manager.SkinDirectory = @"..\..\..\Content\Skins\";
+            manager.Initialize();
             base.Initialize();
+            Gui.GuiInitialize(manager, graphics);
             
         }
 
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             primitiveBatch = new PrimitiveBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
         }
 
-        /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// all content.
-        /// </summary>
+
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+           
         }
 
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+
         protected override void Update(GameTime gameTime)
         {
             // Allows the game to exit
@@ -118,21 +98,16 @@ namespace Emergence
             float rotation = Mouse.GetState().ScrollWheelValue;
             symet1.Position = movement;
             symet1.Rotation = rotation * .05f;
-
+            manager.Update(gameTime);
             base.Update(gameTime);
         }
 
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
 
             symet1.Draw(primitiveBatch);
-            // TODO: Add your drawing code here
-
+            manager.Draw(gameTime);
             base.Draw(gameTime);
         }
     }
