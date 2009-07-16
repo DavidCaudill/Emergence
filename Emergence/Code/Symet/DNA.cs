@@ -26,8 +26,9 @@ namespace Emergence
         Dictionary<int, Chromosome> chromosomes;
         Shape bodyShape;
         float bodySize;
+        SegmentType bodyType;
 
-        // Properties
+        # region Properties
 
         public Shape BodyShape
         {
@@ -51,6 +52,17 @@ namespace Emergence
                 this.bodySize = value;
             }
         }
+        public SegmentType BodyType
+        {
+            get
+            {
+                return this.bodyType;
+            }
+            set
+            {
+                this.bodyType = value;
+            }
+        }
         public Dictionary<int, Chromosome> Chromosomes
         {
             get
@@ -58,6 +70,8 @@ namespace Emergence
                 return this.chromosomes;
             }
         }
+
+        #endregion
 
         // Functions
         public DNA()
@@ -68,10 +82,11 @@ namespace Emergence
             chromosomes = new Dictionary<int, Chromosome>();
         }
 
-        public DNA(Shape bodyShape, float bodySize)
+        public DNA(Shape bodyShape, float bodySize, SegmentType bodyType)
         {
             this.bodyShape = bodyShape;
             this.bodySize = bodySize;
+            this.bodyType = bodyType;
 
             chromosomes = new Dictionary<int, Chromosome>();
         }
@@ -169,10 +184,13 @@ namespace Emergence
                         segmentVertices.Add(segments[chromosome.ParentID].Vertices[chromosome.ParentFace]);
                     }
 
+                    if (chromosome.ParentID != 0)
+                        segments[chromosome.ParentID].Faces[chromosome.ParentFace] = chromosome.ID;
+
                     segments.Add(chromosome.ID, new Segment(
                         segmentVertices, 
                         chromosome.ID, 
-                        chromosome.ParentID + 1, 
+                        chromosome.ParentID, 
                         chromosome.ParentFace, 
                         chromosome.Type));
                 }
@@ -180,7 +198,7 @@ namespace Emergence
                 arms.Add(i, tempArm);
             } 
             
-            symet = new Symet(bodyVertices, arms);
+            symet = new Symet(bodyVertices, arms, this);
 
             return symet;
         }

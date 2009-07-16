@@ -21,8 +21,10 @@ namespace Emergence
         Vector2 position;
         double rotation;
         SegmentType type;
+        int hitPoints;
+        int maxHitPoints;
 
-        // Properties
+        # region Properties
 
         public List<Vector2> Vertices
         {
@@ -99,6 +101,41 @@ namespace Emergence
                 primitive.Rotation = Convert.ToSingle(value);                
             }
         }
+        public Dictionary<int, int> Faces
+        {
+            get
+            {
+                return this.faces;
+            }
+            set
+            {
+                this.faces = value;
+            }
+        }
+        public int HitPoints
+        {
+            get
+            {
+                return this.hitPoints;
+            }
+            set
+            {
+                this.hitPoints = value;
+            }
+        }
+        public int MaxHitPoints
+        {
+            get
+            {
+                return this.maxHitPoints;
+            }
+            set
+            {
+                this.maxHitPoints = value;
+            }
+        }
+
+        #endregion
 
         // Functions
 
@@ -116,7 +153,7 @@ namespace Emergence
             this.type = type;
 
             // Set up the faces
-            faces.Add(0, parentID);
+            //faces.Add(0, parentID);
             for (int i = 1; i < this.vertices.Count; i++)
             {
                 faces.Add(i, -1);
@@ -140,8 +177,16 @@ namespace Emergence
                 default:
                     break;
             }
-             
+
+            hitPoints = 100;
+            maxHitPoints = 100;
             this.active = true;
+        }
+
+        public int Update(GameTime gameTime)
+        {
+
+            return 1;
         }
 
         public int Draw(PrimitiveBatch primitiveBatch)

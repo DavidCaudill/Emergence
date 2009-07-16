@@ -63,6 +63,7 @@ namespace Emergence
             textbox.Width = 830;
             textbox.Height = 20;
             textbox.ReadOnly = true;
+            textbox.Passive = true;
             textbox.Left = (1024 / 2) - (textbox.Width / 2);
             textbox.Top = 0;
             textbox.Parent = BottomBar;

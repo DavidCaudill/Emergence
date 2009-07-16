@@ -29,29 +29,37 @@ namespace Emergence
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
+            Gui = new EmergenceGui();
+
+            manager = new Manager(this, graphics, "Default", true);
+            manager.SkinDirectory = @"..\..\..\Content\Skins\";
+
             graphics.PreferredBackBufferWidth = 1027;
             graphics.PreferredBackBufferHeight = 768;
+            graphics.ApplyChanges();
+
+            Content.RootDirectory = "Content";
+
             IsMouseVisible = true;
-            IsFixedTimeStep = false;
+            IsFixedTimeStep = true;
             graphics.SynchronizeWithVerticalRetrace = false;
-            Gui = new EmergenceGui();
         }
 
         protected override void Initialize()
         {
-            dna1 = new DNA(Shape.Triangle, 50.0f);
+            // Test symet creation code
+            dna1 = new DNA(Shape.Triangle, 50.0f, SegmentType.Defend);
             List<VectorP> instructions1 = new List<VectorP>();
             List<VectorP> instructions2 = new List<VectorP>();
 
-            instructions1.Add(new VectorP(.9, 50));
+            instructions1.Add(new VectorP(1.2, 50));
             instructions1.Add(new VectorP(.7, 60));
-            instructions1.Add(new VectorP(.5, 70));
+            //instructions1.Add(new VectorP(.5, 70));
             instructions1.Add(new VectorP(.3, 80));
 
-            instructions2.Add(new VectorP(.7, 50));
+            instructions2.Add(new VectorP(.9, 50));
             instructions2.Add(new VectorP(.5, 155));
-            instructions2.Add(new VectorP(.4, 44));
+            //instructions2.Add(new VectorP(.4, 44));
             instructions2.Add(new VectorP(.1, 22));
 
             dna1.CreateChromosome(instructions1, 0, 1, SegmentType.Photo);
@@ -62,10 +70,9 @@ namespace Emergence
 
             symet1 = dna1.BuildDNA();
             symet1.Position = new Vector2(300);
-            manager = new Manager(this, graphics, "Default", false);
-            manager.SkinDirectory = @"..\..\..\Content\Skins\";
-            manager.Initialize();
+            
             base.Initialize();
+
             Gui.GuiInitialize(manager, graphics);
             
         }
@@ -74,7 +81,6 @@ namespace Emergence
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             primitiveBatch = new PrimitiveBatch(GraphicsDevice);
-
         }
 
 
@@ -98,7 +104,9 @@ namespace Emergence
             float rotation = Mouse.GetState().ScrollWheelValue;
             symet1.Position = movement;
             symet1.Rotation = rotation * .05f;
-            manager.Update(gameTime);
+
+            symet1.Update(gameTime);
+
             base.Update(gameTime);
         }
 
@@ -107,7 +115,7 @@ namespace Emergence
             GraphicsDevice.Clear(Color.Black);
 
             symet1.Draw(primitiveBatch);
-            manager.Draw(gameTime);
+  
             base.Draw(gameTime);
         }
     }

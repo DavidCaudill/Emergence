@@ -68,7 +68,7 @@ namespace Emergence
         Dictionary<int, int> faces;
         SegmentType type;
 
-        // Properties
+        # region Properties
 
         public List<VectorP> Instructions
         {
@@ -132,6 +132,8 @@ namespace Emergence
                 this.type = value;
             }
         }
+
+        #endregion
 
         // Functions
 
