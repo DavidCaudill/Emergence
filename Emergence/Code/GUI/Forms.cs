@@ -26,6 +26,7 @@ namespace Emergence
         private RadioButton radMutigen;
         private RadioButton radGrab;
         private Button btnSettings;
+        private Button btnSample;
         private Button btnSave;
         private Button btnLoad;
 
@@ -121,6 +122,18 @@ namespace Emergence
             btnSettings.Parent = BottomBar;
             btnSettings.Click += new MouseEventHandler(btnSettings_Click);
 
+            // Create Sample button.
+            btnSample = new Button(manager);
+            btnSample.Init();
+            btnSample.Text = "Sample";
+            btnSample.Width = 72;
+            btnSample.Height = 24;
+            btnSample.Left = 10;
+            btnSample.Top = 44;
+            btnSample.Anchor = Anchors.Bottom;
+            btnSample.Parent = BottomBar;
+            btnSample.Click += new MouseEventHandler(btnSample_Click);
+
             // Create Save Button.
             btnSave = new Button(manager);
             btnSave.Init();
@@ -175,7 +188,9 @@ namespace Emergence
             spnMutRate.Maximum = 10;
             spnMutRate.Minimum = 0;
             spnMutRate.Rounding = 0;
+            spnMutRate.Value = 5;
             spnMutRate.Step = 1;
+            spnMutRate.Passive = true;
             spnMutRate.Parent = wndSettings;
 
             lblSolar = new Label(manager);
@@ -198,6 +213,8 @@ namespace Emergence
             spnSolar.Minimum = 0;
             spnSolar.Rounding = 0;
             spnSolar.Step = 1;
+            spnSolar.Value = 5;
+            spnSolar.Passive = true;
             spnSolar.Parent = wndSettings;
 
             lblLifeSpan = new Label(manager);
@@ -220,6 +237,8 @@ namespace Emergence
             spnLifeSpan.Minimum = 0;
             spnLifeSpan.Rounding = 0;
             spnLifeSpan.Step = 1;
+            spnLifeSpan.Value = 15;
+            spnLifeSpan.Passive = true;
             spnLifeSpan.Parent = wndSettings;
 
             lblSpeed = new Label(manager);
@@ -242,6 +261,8 @@ namespace Emergence
             spnSpeed.Minimum = 0;
             spnSpeed.Rounding = 0;
             spnSpeed.Step = 1;
+            spnSpeed.Value = 5;
+            spnSpeed.Passive = true;
             spnSpeed.Parent = wndSettings;
 
             // Create Done Button.
@@ -254,15 +275,26 @@ namespace Emergence
             btnSettingsClose.Top = 300 - 64;
             btnSettingsClose.Anchor = Anchors.Bottom;
             btnSettingsClose.Parent = wndSettings;
+            btnSettingsClose.Click += new MouseEventHandler(btnDone_Click);
 
             // Add the window controls to the manager processing queue.
             manager.Add(BottomBar);
             manager.Add(wndSettings);
         }
 
+        public void btnSample_Click(object sender, MouseEventArgs e)
+        {
+            
+        }
+
         public void btnSettings_Click(object sender, MouseEventArgs e)
         {
             wndSettings.Visible = true;
+        }
+
+        public void btnDone_Click(object sender, MouseEventArgs e)
+        {
+            wndSettings.Visible = false;
         }
 
 
