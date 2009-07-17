@@ -12,12 +12,11 @@ namespace Emergence
         // Attributes
 
         List<Vector2> vertices;
-        bool active;
+        bool alive;
         int id;
         int parentID;
         int parentFace;
         Dictionary<int, int> faces; // <face id, segment id attached>
-        PrimitiveShape primitive;
         Vector2 position;
         double rotation;
         SegmentType type;
@@ -33,15 +32,26 @@ namespace Emergence
                 return this.vertices;
             }
         }
-        public bool Active
+        public bool Alive
         {
             get
             {
-                return this.active;
+                return this.alive;
             }
             set
             {
-                this.active = value;
+                this.alive = value;
+            }
+        }
+        public SegmentType Type
+        {
+            get
+            {
+                return this.type;
+            }
+            set
+            {
+                this.type = value;
             }
         }
         public int ID
@@ -85,8 +95,7 @@ namespace Emergence
             }
             set
             {
-                this.position = value;
-                primitive.Position = value;                
+                this.position = value;               
             }
         }
         public double Rotation
@@ -97,8 +106,7 @@ namespace Emergence
             }
             set
             {
-                this.rotation = value;
-                primitive.Rotation = Convert.ToSingle(value);                
+                this.rotation = value;              
             }
         }
         public Dictionary<int, int> Faces
@@ -153,34 +161,14 @@ namespace Emergence
             this.type = type;
 
             // Set up the faces
-            //faces.Add(0, parentID);
             for (int i = 1; i < this.vertices.Count; i++)
             {
                 faces.Add(i, -1);
             }
 
-            // Build the primative shape
-            primitive = new PrimitiveShape(vertices.ToArray(), DrawType.LineStrip);
-            switch (type)
-            {
-                case SegmentType.None:
-                    break;
-                case SegmentType.Attack:
-                    primitive.ShapeColor = Color.Red;
-                    break;
-                case SegmentType.Defend:
-                    primitive.ShapeColor = Color.Blue;
-                    break;
-                case SegmentType.Photo:
-                    primitive.ShapeColor = Color.Green;
-                    break;
-                default:
-                    break;
-            }
-
             hitPoints = 100;
             maxHitPoints = 100;
-            this.active = true;
+            this.alive = true;
         }
 
         public int Update(GameTime gameTime)
@@ -189,11 +177,26 @@ namespace Emergence
             return 1;
         }
 
-        public int Draw(PrimitiveBatch primitiveBatch)
+        public static Color GetColor(SegmentType type)
         {
-            primitive.Draw(primitiveBatch);
+            switch (type)
+            {
+                case SegmentType.None:
+                    break;
+                case SegmentType.Attack:
+                    return Color.Red;
+                    break;
+                case SegmentType.Defend:
+                    return Color.Blue;
+                    break;
+                case SegmentType.Photo:
+                    return Color.Green;
+                    break;
+                default:
+                    break;
+            }
 
-            return 1;
+            return Color.Black;
         }
     }
 }

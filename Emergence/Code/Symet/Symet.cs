@@ -13,13 +13,15 @@ namespace Emergence
 
         Dictionary<int, Arm> arms;
         List<Vector2> vertices;
-        List<Vector2> skeletalVertices;
-        PrimitiveShape primitive;
+        List<ShapeBuilderVertice> skeletalVertices;
+        List<ShapeBuilderVertice> dividerVertices;
         Vector2 position;
         double rotation;
-        bool active;
+        float scale;
+        bool alive;
         DNA dna;
         PrimitiveShape skeleton;
+        PrimitiveShape segmentDividers;
         int hitPoints;
 
         int lastRegen;
@@ -36,11 +38,8 @@ namespace Emergence
             set
             {
                 this.position = value;
-                primitive.Position = value;
                 skeleton.Position = value;
-
-                foreach (Arm arm in arms.Values)
-                    arm.Position = value;
+                segmentDividers.Position = value;
             }
         }
         public double Rotation
@@ -52,22 +51,36 @@ namespace Emergence
             set
             {
                 this.rotation = value;
-                primitive.Rotation = Convert.ToSingle(value);
                 skeleton.Rotation = Convert.ToSingle(value);
-
-                foreach (Arm arm in arms.Values)
-                    arm.Rotation = value;
+                segmentDividers.Rotation = Convert.ToSingle(value);
             }
         }
-        public bool Active
+        public float Scale
         {
             get
             {
-                return this.active;
+                return this.scale;
             }
             set
             {
-                this.active = value;
+                if (value < 0)
+                {
+                    value = 0;
+                }
+                this.scale = value;
+                skeleton.Scale = value;
+                segmentDividers.Scale = value;
+            }
+        }
+        public bool Alive
+        {
+            get
+            {
+                return this.alive;
+            }
+            set
+            {
+                this.alive = value;
             }
         }
 
@@ -82,43 +95,27 @@ namespace Emergence
         public Symet(List<Vector2> vertices, Dictionary<int, Arm> arms, DNA dna)
         {
             this.vertices = vertices;
-            this.active = false;
+            this.alive = false;
             this.arms = arms;
             this.dna = dna;
 
-            this.energy = 1000;
+            this.energy = 1900;
             this.hitPoints = 100;
+            this.scale = 1;
 
-            // Build the primative shape
-            primitive = new PrimitiveShape(vertices.ToArray(), DrawType.LineLoop);
-            switch (dna.BodyType)
-            {
-                case SegmentType.None:
-                    break;
-                case SegmentType.Attack:
-                    primitive.ShapeColor = Color.Red;
-                    break;
-                case SegmentType.Defend:
-                    primitive.ShapeColor = Color.Blue;
-                    break;
-                case SegmentType.Photo:
-                    primitive.ShapeColor = Color.Green;
-                    break;
-                default:
-                    break;
-            }
+            // Start off with some battle damage for show
+            //arms[0].SetSegmentAlive(1, false);
+            //arms[1].SetSegmentAlive(3, false);
+            //arms[2].SetSegmentAlive(2, false);
+            //arms[2].SetSegmentAlive(5, false);
 
-            arms[0].SetSegmentActive(1, false);
-            arms[1].SetSegmentActive(3, false);
-            arms[2].SetSegmentActive(2, false);
-            arms[2].SetSegmentActive(5, false);
             BuildSkeleton();
         }
 
         public int Update(GameTime gameTime)
         {
             // Regenerate any lost hitpoints
-            if (lastRegen > 500)
+            if (lastRegen > 500 && energy > 50)
             {
                 lastRegen = 0;
 
@@ -132,60 +129,99 @@ namespace Emergence
                     tempEnergyDrain += arm.Regenerate(energy / 3 > 100 ? 100 : energy / 3);
                 }
 
-                // Possible need for rebuilding skeleton so do it
-                if(tempEnergyDrain > 0)
-                    BuildSkeleton();
-
                 energy -= tempEnergyDrain;
             }
 
             lastRegen += gameTime.ElapsedGameTime.Milliseconds;
 
+            // Find out if we need to rebuild the skeleton
+            bool tempBool = false;
             foreach (Arm arm in arms.Values)
             {
                 arm.Update(gameTime);
+
+                if (arm.RebuildSkeleton)
+                {
+                    tempBool = true;
+                    arm.RebuildSkeleton = false;
+                }
             }
+
+            if (tempBool)
+                BuildSkeleton();
+
             return 1;
         }
 
         public int Draw(PrimitiveBatch primitiveBatch)
         {
-            primitive.Draw(primitiveBatch);
-            foreach (Arm arm in arms.Values)
-            {
-                arm.Draw(primitiveBatch);
-            }
             skeleton.Draw(primitiveBatch);
+            segmentDividers.Draw(primitiveBatch);
 
             return 1;
         }
 
         public int BuildSkeleton()
         {
-            skeletalVertices = new List<Vector2>();
+            skeletalVertices = new List<ShapeBuilderVertice>();
+            dividerVertices = new List<ShapeBuilderVertice>();
+
+            List<Vector2> tempVertices = new List<Vector2>();
+            List<Color> tempColors = new List<Color>();
 
             int j = 0;
             foreach (Arm arm in arms.Values)
             {
-                skeletalVertices.Add(vertices[j]);
-                skeletalVertices.AddRange(arm.RecursiveSkeletonBuilder(1));
+                skeletalVertices.Add(new ShapeBuilderVertice(vertices[j], Segment.GetColor(dna.BodyType)));
+
+                if (arm.Alive)
+                {
+                    dividerVertices.Add(new ShapeBuilderVertice(vertices[j], Segment.GetColor(dna.BodyType)));
+                    dividerVertices.Add(new ShapeBuilderVertice(vertices[(j + 1) % vertices.Count], Segment.GetColor(dna.BodyType)));
+                }
+
+                skeletalVertices.AddRange(arm.RecursiveSkeletonBuilder(1, Segment.GetColor(dna.BodyType)));
+                dividerVertices.AddRange(arm.SegmentDividerBuilder());
                 j++;
             }
 
-            // Check for double vertices and remove
-            for (int i = 0; i < skeletalVertices.Count; i++)
+            // Split the skeletalVertices' ShapeBuilderVertice's into seperate lists
+            foreach (ShapeBuilderVertice shapeBuilderVertice in skeletalVertices)
             {
-                if (skeletalVertices[i] == skeletalVertices[(i + 1) % skeletalVertices.Count])
-                    skeletalVertices.RemoveAt(i);
-
-                // Wanted to use this to create an outline, just scaling isnt going to work.
-                // Need to move a vertex outwards inbetween its 2 adjacent faces, probably.
-                //skeletalVertices[i] = Vector2.Transform(skeletalVertices[i], Matrix.CreateScale(1.1f));
+                tempVertices.Add(shapeBuilderVertice.vertice);
+                tempColors.Add(shapeBuilderVertice.color);
             }
 
-            skeleton = new PrimitiveShape(skeletalVertices.ToArray(), DrawType.LineLoop);
+            // Remove any duplicates
+            for (int i = 0; i < tempVertices.Count; i++)
+            {
+                if (tempVertices[i] == tempVertices[(i + 1) % tempVertices.Count])
+                {
+                    tempVertices.RemoveAt(i);
+                    tempColors.RemoveAt(i);
+                }
+            }
+            skeleton = new PrimitiveShape(tempVertices.ToArray(), tempColors.ToArray(), DrawType.LineLoop);
+
+            tempVertices = new List<Vector2>();
+            tempColors = new List<Color>();
+
+            // Split the dividerVertices' ShapeBuilderVertice's into seperate lists
+            foreach (ShapeBuilderVertice shapeBuilderVertice in dividerVertices)
+            {
+                tempVertices.Add(shapeBuilderVertice.vertice);
+                tempColors.Add(shapeBuilderVertice.color);
+            }
+            segmentDividers = new PrimitiveShape(tempVertices.ToArray(), tempColors.ToArray(), DrawType.LineList);
+
+            // Match them to current transformation
             skeleton.Position = position;
             skeleton.Rotation = Convert.ToSingle(rotation);
+            skeleton.Scale = scale;
+
+            segmentDividers.Position = position;
+            segmentDividers.Rotation = Convert.ToSingle(rotation);
+            segmentDividers.Scale = scale;
 
             return 1;
         }

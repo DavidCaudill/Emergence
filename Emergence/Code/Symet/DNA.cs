@@ -151,6 +151,8 @@ namespace Emergence
                 segments = new Dictionary<int, Segment>();
                 foreach (Chromosome chromosome in chromosomes.Values)
                 {
+                    if (!chromosome.Active)
+                        continue;
                     // Build the vertices and add segment
                     segmentVertices = new List<Vector2>();
 

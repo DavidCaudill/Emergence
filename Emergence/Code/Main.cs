@@ -25,6 +25,7 @@ namespace Emergence
 
         DNA dna1;
         Symet symet1;
+        List<Symet> symets;
 
         public Game1()
         {
@@ -42,6 +43,7 @@ namespace Emergence
 
             IsMouseVisible = true;
             IsFixedTimeStep = true;
+            
             graphics.SynchronizeWithVerticalRetrace = false;
         }
 
@@ -51,30 +53,39 @@ namespace Emergence
             dna1 = new DNA(Shape.Triangle, 50.0f, SegmentType.Defend);
             List<VectorP> instructions1 = new List<VectorP>();
             List<VectorP> instructions2 = new List<VectorP>();
+            List<VectorP> instructions3 = new List<VectorP>();
+            symets = new List<Symet>();
 
             instructions1.Add(new VectorP(1.2, 50));
             instructions1.Add(new VectorP(.7, 60));
-            //instructions1.Add(new VectorP(.5, 70));
             instructions1.Add(new VectorP(.3, 80));
 
             instructions2.Add(new VectorP(.9, 50));
             instructions2.Add(new VectorP(.5, 155));
-            //instructions2.Add(new VectorP(.4, 44));
-            instructions2.Add(new VectorP(.1, 22));
+
+            instructions3.Add(new VectorP(1.1, 100));
+            instructions3.Add(new VectorP(1.7, 100));
+            instructions3.Add(new VectorP(1.1, 140));
+            instructions3.Add(new VectorP(.8, 140));
+            instructions3.Add(new VectorP(1.0, 100));
 
             dna1.CreateChromosome(instructions1, 0, 1, SegmentType.Photo);
             dna1.CreateChromosome(instructions1, 1, 1, SegmentType.Defend);
             dna1.CreateChromosome(instructions1, 1, 3, SegmentType.Defend);
             dna1.CreateChromosome(instructions2, 2, 2, SegmentType.Attack);
             dna1.CreateChromosome(instructions2, 3, 2, SegmentType.Attack);
-
-            symet1 = dna1.BuildDNA();
-            symet1.Position = new Vector2(300);
+            dna1.CreateChromosome(instructions3, 1, 2, SegmentType.Defend);
+            
+            for (int i = 0; i < 1; i++)
+            {
+                symet1 = dna1.BuildDNA();
+                symet1.Position = new Vector2(300);
+                symets.Add(symet1);
+            }
             
             base.Initialize();
 
             Gui.GuiInitialize(manager, graphics);
-            
         }
 
         protected override void LoadContent()
@@ -83,12 +94,10 @@ namespace Emergence
             primitiveBatch = new PrimitiveBatch(GraphicsDevice);
         }
 
-
         protected override void UnloadContent()
         {
            
         }
-
 
         protected override void Update(GameTime gameTime)
         {
@@ -102,10 +111,26 @@ namespace Emergence
             movement.Y = Mouse.GetState().Y;
 
             float rotation = Mouse.GetState().ScrollWheelValue;
-            symet1.Position = movement;
-            symet1.Rotation = rotation * .05f;
 
-            symet1.Update(gameTime);
+            bool up = false;
+            bool down = false;
+
+            if (Keyboard.GetState().IsKeyDown(Keys.A))
+                up = true;
+            if (Keyboard.GetState().IsKeyDown(Keys.Z))
+                down = true;
+
+            for (int i = 0; i < symets.Count; i++)
+            {
+                symets[i].Position = movement;
+                symets[i].Rotation = rotation * .05f;
+
+                if (up)
+                    symets[i].Scale += .01f;
+                if (down)
+                    symets[i].Scale -= .01f;
+                symets[i].Update(gameTime);
+            }
 
             base.Update(gameTime);
         }
@@ -114,7 +139,10 @@ namespace Emergence
         {
             GraphicsDevice.Clear(Color.Black);
 
-            symet1.Draw(primitiveBatch);
+            for (int i = 0; i < symets.Count; i++)
+            {
+                symets[i].Draw(primitiveBatch);
+            }
   
             base.Draw(gameTime);
         }

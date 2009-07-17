@@ -8,19 +8,23 @@ namespace Emergence
     public enum DrawType
     {
         LineStrip,
-        LineLoop
+        LineLoop,
+        LineList
     }
 
 	public class PrimitiveShape
 	{
 		public Color ShapeColor = Color.White;
+        Color[] lineColor;
 
 		Vector2[] vertices;
 		Vector2[] transformedVertices;
 		BoundingRectangle bounds;
 		Vector2 position = Vector2.Zero;
 		float rotation = 0f;
+        float scale = 1f;
         DrawType type;
+        bool recalculate;
 
 		public Vector2 Position
 		{
@@ -30,55 +34,80 @@ namespace Emergence
 				if (!position.Equals(value))
 				{
 					position = value;
-					CalculatePointsAndBounds();
+                    recalculate = true;
 				}
 			}
 		}
 
-		public float Rotation
-		{
-			get { return rotation; }
-			set
-			{
-				if (rotation != value)
-				{
-					rotation = value;
-					CalculatePointsAndBounds();
-				}
-			}
-		}
+        public float Rotation
+        {
+            get { return rotation; }
+            set
+            {
+                if (rotation != value)
+                {
+                    rotation = value;
+                    recalculate = true;
+                }
+            }
+        }
+        public float Scale
+        {
+            get { return scale; }
+            set
+            {
+                if (scale != value)
+                {
+                    scale = value;
+                    recalculate = true;
+                }
+            }
+        }
 
 		public BoundingRectangle Bounds
 		{
 			get { return bounds; }
 		}
 
-        public PrimitiveShape(Vector2[] vertices, DrawType type)
+        public PrimitiveShape(Vector2[] vertices, Color[] lineColor, DrawType type)
 		{
 			this.vertices = (Vector2[])vertices.Clone();
 			this.transformedVertices = new Vector2[vertices.Length];
             this.type = type;
+            this.lineColor = lineColor;
 			CalculatePointsAndBounds();
 		}
 
 		public void Draw(PrimitiveBatch batch)
 		{
-			batch.Begin(PrimitiveType.LineList);
+            batch.Begin(PrimitiveType.LineList);
+
+            if (recalculate)
+            {
+                CalculatePointsAndBounds();
+                recalculate = false;
+            }
 
             switch (type)
             {
                 case DrawType.LineStrip:
                     for (int i = 0; i < transformedVertices.Length -1; i++)
                     {
-                        batch.AddVertex(transformedVertices[i], ShapeColor);
-                        batch.AddVertex(transformedVertices[(i + 1)], ShapeColor);
+                        batch.AddVertex(transformedVertices[i], lineColor[i]);
+                        batch.AddVertex(transformedVertices[(i + 1)], lineColor[i]);
                     }
                     break;
                 case DrawType.LineLoop:
                     for (int i = 0; i < transformedVertices.Length; i++)
                     {
-                        batch.AddVertex(transformedVertices[i], ShapeColor);
-                        batch.AddVertex(transformedVertices[(i + 1) % transformedVertices.Length], ShapeColor);
+                        batch.AddVertex(transformedVertices[i], lineColor[i]);
+                        batch.AddVertex(transformedVertices[(i + 1) % transformedVertices.Length], lineColor[i]);
+                    }
+                    break;
+                case DrawType.LineList:
+                    for (int i = 0; i < transformedVertices.Length; i++)
+                    {
+                        batch.AddVertex(transformedVertices[i], lineColor[i]);
                     }
                     break;
                 default:
@@ -91,9 +120,9 @@ namespace Emergence
 		private void CalculatePointsAndBounds()
 		{
 			for (int i = 0; i < vertices.Length; i++)
-				transformedVertices[i] = Vector2.Transform(vertices[i], Matrix.CreateRotationZ(rotation)) + position;
+				transformedVertices[i] = Vector2.Transform(vertices[i], Matrix.CreateRotationZ(rotation) *Matrix.CreateScale(scale)) + position;
 
-			bounds = new BoundingRectangle(transformedVertices);
+			//bounds = new BoundingRectangle(transformedVertices);
 		}
 
 		/* using the algorithm written by Darel Rex Finley at
