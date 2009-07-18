@@ -22,23 +22,27 @@ namespace Emergence
         PrimitiveBatch primitiveBatch;
         EmergenceGui Gui;
         Manager manager;
-        Settings Globals;
         DNA dna1;
         Symet symet1;
         List<Symet> symets;
 
         static Random random;
+        static Settings globals;
 
         public static Random GetRandom()
         {
             return random;
+        }
+        public static Settings GetGlobals()
+        {
+            return globals;
         }
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Gui = new EmergenceGui();
-            Globals = new Settings();
+            globals = new Settings();
             manager = new Manager(this, graphics, "Default", true);
             manager.SkinDirectory = @"..\..\..\Content\Skins\";
 
@@ -94,12 +98,12 @@ namespace Emergence
 
             base.Initialize();
 
-            Gui.GuiInitialize(manager, graphics, Globals);
+            Gui.GuiInitialize(manager, graphics);
         }
 
         protected override void LoadContent()
         {
-            Globals.Load();
+            Game1.GetGlobals().Load();
             spriteBatch = new SpriteBatch(GraphicsDevice);
             primitiveBatch = new PrimitiveBatch(GraphicsDevice);
         }

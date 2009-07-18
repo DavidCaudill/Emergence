@@ -44,7 +44,7 @@ namespace Emergence
         private Button btnSettingsClose;
 
 
-        public void GuiInitialize(Manager manager, GraphicsDeviceManager graphics, Settings Globals)
+        public void GuiInitialize(Manager manager, GraphicsDeviceManager graphics)
         {
             // Create and setup Window control.
             BottomBar = new Window(manager);
@@ -189,7 +189,7 @@ namespace Emergence
             spnMutRate.Maximum = 10;
             spnMutRate.Minimum = 0;
             spnMutRate.Rounding = 0;
-            spnMutRate.Value = Globals.MutationRate;
+            spnMutRate.Value = Game1.GetGlobals().MutationRate;
             spnMutRate.Step = 1;
             spnMutRate.Passive = true;
             spnMutRate.Parent = wndSettings;
@@ -214,7 +214,7 @@ namespace Emergence
             spnSolar.Minimum = 0;
             spnSolar.Rounding = 0;
             spnSolar.Step = 1;
-            spnSolar.Value = Globals.SolarIntensity;
+            spnSolar.Value = Game1.GetGlobals().SolarIntensity;
             spnSolar.Passive = true;
             spnSolar.Parent = wndSettings;
 
@@ -238,7 +238,7 @@ namespace Emergence
             spnLifeSpan.Minimum = 0;
             spnLifeSpan.Rounding = 0;
             spnLifeSpan.Step = 1;
-            spnLifeSpan.Value = Globals.SymetLifespan;
+            spnLifeSpan.Value = Game1.GetGlobals().SymetLifespan;
             spnLifeSpan.Passive = true;
             spnLifeSpan.Parent = wndSettings;
 
@@ -262,7 +262,7 @@ namespace Emergence
             spnSpeed.Minimum = 0;
             spnSpeed.Rounding = 0;
             spnSpeed.Step = 1;
-            spnSpeed.Value = Globals.SymetSpeed;
+            spnSpeed.Value = Game1.GetGlobals().SymetSpeed;
             spnSpeed.Passive = true;
             spnSpeed.Parent = wndSettings;
 
