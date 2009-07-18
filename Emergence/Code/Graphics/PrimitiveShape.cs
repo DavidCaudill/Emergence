@@ -122,7 +122,7 @@ namespace Emergence
 			for (int i = 0; i < vertices.Length; i++)
 				transformedVertices[i] = Vector2.Transform(vertices[i], Matrix.CreateRotationZ(rotation) *Matrix.CreateScale(scale)) + position;
 
-			//bounds = new BoundingRectangle(transformedVertices);
+			bounds = new BoundingRectangle(transformedVertices);
 		}
 
 		/* using the algorithm written by Darel Rex Finley at

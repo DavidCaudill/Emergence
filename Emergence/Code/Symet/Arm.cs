@@ -276,6 +276,14 @@ namespace Emergence
             return 1;
         }
 
+        public bool GetSegmentAlive(int segmentID)
+        {
+            if (segments[segmentID].Alive)
+                return true;
+
+            return false;
+        }
+
         // Adjusts the segments health reletive to healthAdjustment
         // Takes care of activating and deactivating it and its child segments if needed
         // Returns

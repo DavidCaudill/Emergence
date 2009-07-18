@@ -182,7 +182,7 @@ namespace Emergence
 
             this.volume = Symet.CalculateArea(vertices);
             
-            maxHitPoints = Convert.ToInt32(volume / 10.0f);
+            maxHitPoints = Convert.ToInt32(volume * 5);
             hitPoints = maxHitPoints;
         }
 

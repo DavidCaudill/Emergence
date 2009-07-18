@@ -29,6 +29,8 @@ namespace Emergence
         float volume;
         float totalVolume;
 
+        PrimitiveShape bounds;
+
         List<int> movementSegments;
         float lastMovementSegment;
         float lastMovementArm;
@@ -109,28 +111,28 @@ namespace Emergence
             this.arms = arms;
             this.dna = dna;
 
-            this.energy = 20000;
+            this.energy = 9999;
             this.hitPoints = 100;
             this.scale = 1;
-            this.rotation = 0;
+            this.rotation = Game1.GetRandom().NextDouble() * 2 * Math.PI;
             this.velocity = new Vector2(0,0);
             this.angularVelocity = 0;
 
-            // Start off with some battle damage for show
-            //arms[0].SetSegmentAlive(1, false);
-            //arms[1].SetSegmentAlive(3, false);
-            //arms[2].SetSegmentAlive(2, false);
-            //arms[2].SetSegmentAlive(5, false);
+            // Start off with some BATTLE DAMAGE for show
+            arms[0].SetSegmentAlive(1, false);
+            arms[1].SetSegmentAlive(3, false);
+            arms[2].SetSegmentAlive(2, false);
+            arms[2].SetSegmentAlive(5, false);
 
             BuildSkeleton();
 
+            // Get volume and set health
             volume = Symet.CalculateArea(this.vertices);
             totalVolume = arms[0].Volume * arms.Count;
-
-            maxHitPoints = Convert.ToInt32(volume / 10.0f);
+            maxHitPoints = Convert.ToInt32(volume * 5);
             hitPoints = maxHitPoints;
 
-            
+            // Get a list of our movement segment IDs to use for movment in Update()
             movementSegments = new List<int>();
             foreach(Chromosome chromosome in dna.Chromosomes.Values)
             {
@@ -138,23 +140,44 @@ namespace Emergence
                     movementSegments.Add(chromosome.ID);
             }
 
-            lastMovementSegment = Convert.ToSingle(Game1.GetRandom().NextDouble() * movementSegments.Count());
-            lastMovementArm = Convert.ToSingle(Game1.GetRandom().NextDouble() * arms.Count());
+            // Get a random postition for the timers
+            lastMovementFire = Convert.ToInt32(Game1.GetRandom().NextDouble() * dna.MovementFrequency * 1000);
+            lastRegen = Convert.ToInt32(Game1.GetRandom().NextDouble() * 1000);
 
-            while (lastMovementArm < .5)
-                lastMovementArm = Convert.ToSingle(Game1.GetRandom().NextDouble() * arms.Count() );
+            // This will make their patterns have random starting positisions, ones that they would most likly not be able to achieve normally
+            //lastMovementSegment = Convert.ToSingle(Game1.GetRandom().NextDouble() * movementSegments.Count());
+            //lastMovementArm = Convert.ToSingle(Game1.GetRandom().NextDouble() * arms.Count());
+            
+            //while (lastMovementArm < .5)
+            //    lastMovementArm = Convert.ToSingle(Game1.GetRandom().NextDouble() * arms.Count() );
+            //while (lastMovementSegment < .5)
+            //    lastMovementSegment = Convert.ToSingle(Game1.GetRandom().NextDouble() * movementSegments.Count());
 
-            while (lastMovementSegment < .5)
-                lastMovementSegment = Convert.ToSingle(Game1.GetRandom().NextDouble() * movementSegments.Count());
+            // This will make their starting positions appear on their pattern somewhere, make it a lot less random
+            int randomNumber;
+            randomNumber = Game1.GetRandom().Next(100);
+            lastMovementSegment = .5f;
+            for (int i = 0; i < randomNumber; i++)
+            {
+                lastMovementSegment += dna.MovementFrequency;
+                if (lastMovementSegment >= Convert.ToSingle(movementSegments.Count + .5f))
+                    lastMovementSegment -= Convert.ToSingle(movementSegments.Count);
+            }
 
-            //lastMovementSegment = 0;
-            //lastMovementArm = 0;
+            randomNumber = Game1.GetRandom().Next(100);
+            lastMovementArm = .5f;
+            for (int i = 0; i < randomNumber; i++)
+            {
+                lastMovementArm += dna.MovementFrequency;
+                if (lastMovementArm >= Convert.ToSingle(arms.Count() + .5f))
+                    lastMovementArm -= Convert.ToSingle(arms.Count());
+            }
         }
 
         public int Update(GameTime gameTime)
         {
             // Regenerate any lost hitpoints
-            if (lastRegen > 500 && energy > 50)
+            if (lastRegen > 1000 && energy > energy * .15)
             {
                 lastRegen = 0;
 
@@ -200,51 +223,68 @@ namespace Emergence
             skeleton.Draw(primitiveBatch);
             segmentDividers.Draw(primitiveBatch);
 
+            List<Vector2> vertices = new List<Vector2>();
+            List<Color> colors = new List<Color>();
+
+            // This code will draw white boxes around the symet
+            //vertices.Add(new Vector2(skeleton.Bounds.l, skeleton.Bounds.t));
+            //vertices.Add(new Vector2(skeleton.Bounds.r, skeleton.Bounds.t));
+            //vertices.Add(new Vector2(skeleton.Bounds.r, skeleton.Bounds.b));
+            //vertices.Add(new Vector2(skeleton.Bounds.l, skeleton.Bounds.b));
+            //colors.Add(Color.White);
+            //colors.Add(Color.White);
+            //colors.Add(Color.White);
+            //colors.Add(Color.White);
+            //bounds = new PrimitiveShape(vertices.ToArray(), colors.ToArray(), DrawType.LineLoop);
+            //bounds.Draw(primitiveBatch);
             return 1;
         }
 
         private int DoMovement(GameTime gameTime)
         {
-            if (lastMovementFire > dna.MovementFrequency * 1000)
+            if (lastMovementFire > (dna.MovementFrequency ) * 1000)
             {
                 lastMovementFire = 0;
 
                 // Figure out what segment of an arm needs to fire
                 int segmentTofire = 0;
                 lastMovementSegment += dna.MovementFrequency;
-                while (lastMovementSegment > Convert.ToSingle(movementSegments.Count + .5f))
-                {
+                if (lastMovementSegment >= Convert.ToSingle(movementSegments.Count + .5f))
                     lastMovementSegment -= Convert.ToSingle(movementSegments.Count);
-                }
+
                 segmentTofire = Convert.ToInt32(lastMovementSegment);
 
                 // Figure out what arm that segment should come from
                 int armToFire = 0;
                 lastMovementArm += dna.MovementFrequency;
-                while (lastMovementArm > Convert.ToSingle(arms.Count() + .5f))
-                {
+                if (lastMovementArm >= Convert.ToSingle(arms.Count() + .5f))
                     lastMovementArm -= Convert.ToSingle(arms.Count());
-                }
+
                 armToFire = Convert.ToInt32(lastMovementArm);
 
-                
-                // Calculate the velocity change and angular velocity
-                Vector2 tempMovement = dna.Chromosomes[movementSegments[segmentTofire - 1]].MovementVector;
-                tempMovement = Vector2.Transform(tempMovement,
-                    Matrix.CreateRotationZ(Convert.ToSingle(rotation)) *
-                    Matrix.CreateRotationZ(Convert.ToSingle(((2 * Math.PI) / Convert.ToInt32(dna.BodyShape) * armToFire))));
+                // Make sure this segment is alive, if not then nothing fires this time around
+                if (arms[armToFire - 1].GetSegmentAlive(segmentTofire))
+                {
+                    // Calculate the velocity change and angular velocity
+                    Vector2 tempMovement = dna.Chromosomes[movementSegments[segmentTofire - 1]].MovementVector;
+                    tempMovement = Vector2.Transform(tempMovement,
+                        Matrix.CreateRotationZ(Convert.ToSingle(rotation)) *
+                        Matrix.CreateRotationZ(Convert.ToSingle(((2 * Math.PI) / Convert.ToInt32(dna.BodyShape) * armToFire))));
 
-                double tempAngle = GetAngle(tempMovement, arms[armToFire - 1].GetSegmentCenter(dna.Chromosomes[movementSegments[segmentTofire - 1]].ID));
-                Vector2 tempVector = arms[armToFire - 1].GetSegmentCenter(dna.Chromosomes[movementSegments[segmentTofire - 1]].ID);
-                angularVelocity += tempMovement.Length() * Convert.ToSingle(Math.Sin(tempAngle)) / tempVector.Length();
+                    double tempAngle = GetAngle(tempMovement, arms[armToFire - 1].GetSegmentCenter(dna.Chromosomes[movementSegments[segmentTofire - 1]].ID));
+                    Vector2 tempVector = arms[armToFire - 1].GetSegmentCenter(dna.Chromosomes[movementSegments[segmentTofire - 1]].ID);
 
-                // Cap the angular velocity
-                if (angularVelocity > .12)
-                    angularVelocity = .12f;
-                if (angularVelocity < -.12)
-                    angularVelocity = -.12f;
+                    // TODO: The last parameter controls how strong the spin is. Might base it off of weight in the future
+                    angularVelocity += tempMovement.Length() * Convert.ToSingle(Math.Sin(tempAngle)) / tempVector.Length() * .14f; 
 
-                velocity += tempMovement;
+                    velocity += tempMovement;
+
+                    // Cap the angular velocity
+                    if (angularVelocity > .25f)
+                        angularVelocity = .25f;
+                    if (angularVelocity < -.25f)
+                        angularVelocity = -.25f;
+                }
             }
             lastMovementFire += gameTime.ElapsedGameTime.Milliseconds;
 
@@ -253,8 +293,8 @@ namespace Emergence
             Position += velocity;
 
             // Dampen the velocities
-            angularVelocity *= .97f;
-            velocity *= .92f;
+            angularVelocity *= .975f;
+            velocity *= .96f;
             return 1;
         }
 
@@ -352,16 +392,12 @@ namespace Emergence
                     break;
                 case SegmentType.Attack:
                     return Color.Red;
-                    break;
                 case SegmentType.Defend:
                     return Color.Blue;
-                    break;
                 case SegmentType.Photo:
                     return Color.Lime;
-                    break;
                 case SegmentType.Movement:
                     return Color.Turquoise;
-                    break;
                 default:
                     break;
             }

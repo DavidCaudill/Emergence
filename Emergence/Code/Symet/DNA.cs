@@ -87,6 +87,10 @@ namespace Emergence
 
         // Functions
 
+        public DNA()
+        {
+        }
+
         public DNA(Shape bodyShape, float bodySize, SegmentType bodyType, float movementFrequency)
         {
             this.bodyShape = bodyShape;
