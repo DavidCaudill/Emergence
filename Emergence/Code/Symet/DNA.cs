@@ -27,6 +27,7 @@ namespace Emergence
         Shape bodyShape;
         float bodySize;
         SegmentType bodyType;
+        float movementFrequency;
 
         # region Properties
 
@@ -39,6 +40,17 @@ namespace Emergence
             set
             {
                 this.bodyShape = value;
+            }
+        }
+        public float MovementFrequency
+        {
+            get
+            {
+                return this.movementFrequency;
+            }
+            set
+            {
+                this.movementFrequency = value;
             }
         }
         public float BodySize
@@ -74,25 +86,19 @@ namespace Emergence
         #endregion
 
         // Functions
-        public DNA()
-        {
-            this.bodyShape = Shape.None;
-            this.bodySize = 0;
 
-            chromosomes = new Dictionary<int, Chromosome>();
-        }
-
-        public DNA(Shape bodyShape, float bodySize, SegmentType bodyType)
+        public DNA(Shape bodyShape, float bodySize, SegmentType bodyType, float movementFrequency)
         {
             this.bodyShape = bodyShape;
             this.bodySize = bodySize;
             this.bodyType = bodyType;
+            this.movementFrequency = movementFrequency;
 
             chromosomes = new Dictionary<int, Chromosome>();
         }
 
         // Create and attach a new chromosome to an existing one
-        public int CreateChromosome(List<VectorP> instructions, int parentID, int faceID, SegmentType type)
+        public int CreateChromosome(List<VectorP> instructions, int parentID, int faceID, SegmentType type, Vector2 movementVector)
         {
             int id;
 
@@ -115,7 +121,7 @@ namespace Emergence
             }
 
             // Attach the chromosome
-            chromosomes.Add(id, new Chromosome(instructions, id, parentID, faceID, type));
+            chromosomes.Add(id, new Chromosome(instructions, id, parentID, faceID, type, movementVector));
 
             return id;
         }

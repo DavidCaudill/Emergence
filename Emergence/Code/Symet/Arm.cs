@@ -49,6 +49,17 @@ namespace Emergence
                 return segments[1].Alive;
             }
         }
+        public float Volume
+        {
+            get
+            {
+                float volume = 0;
+                foreach (Segment segment in segments.Values)
+                    volume += segment.Volume;
+
+                return volume;
+            }
+        }
         public bool RebuildSkeleton
         {
             get
@@ -215,9 +226,9 @@ namespace Emergence
             foreach (int faceID in segments[segmentID].Faces.Keys)
             {
                 if (segments[segmentID].Faces[faceID] == -1)
-                    tempVertices.Add(new ShapeBuilderVertice(segments[segmentID].Vertices[faceID -1], Segment.GetColor(segments[segmentID].Type)));
+                    tempVertices.Add(new ShapeBuilderVertice(segments[segmentID].Vertices[faceID - 1], Symet.GetColor(segments[segmentID].Type)));
                 else
-                    tempVertices.AddRange(RecursiveSkeletonBuilder(segments[segmentID].Faces[faceID], Segment.GetColor(segments[segmentID].Type)));
+                    tempVertices.AddRange(RecursiveSkeletonBuilder(segments[segmentID].Faces[faceID], Symet.GetColor(segments[segmentID].Type)));
             }
 
             return tempVertices;
@@ -233,8 +244,8 @@ namespace Emergence
                     foreach (int faceID in segment.Faces.Keys)
                         if (segment.Faces[faceID] != -1 && segments[segment.Faces[faceID]].Alive)
                         {
-                            tempVertices.Add(new ShapeBuilderVertice(segment.Vertices[faceID - 1], Segment.GetColor(segment.Type)));
-                            tempVertices.Add(new ShapeBuilderVertice(segment.Vertices[faceID], Segment.GetColor(segment.Type)));
+                            tempVertices.Add(new ShapeBuilderVertice(segment.Vertices[faceID - 1], Symet.GetColor(segment.Type)));
+                            tempVertices.Add(new ShapeBuilderVertice(segment.Vertices[faceID], Symet.GetColor(segment.Type)));
                         }
 
             return tempVertices;
@@ -277,10 +288,24 @@ namespace Emergence
 
             if (segments[segmentID].HitPoints < 1)
                 SetSegmentAlive(segmentID, false);
-            if (segments[segmentID].HitPoints > 49 && !segments[segmentID].Alive)
+            if (segments[segmentID].HitPoints > segments[segmentID].MaxHitPoints / 2 && !segments[segmentID].Alive)
                 SetSegmentAlive(segmentID, true);
 
             return 1;
+        }
+
+        public Vector2 GetSegmentCenter(int segmentID)
+        {
+            Vector2 center = new Vector2();
+
+            foreach (Vector2 vector in segments[segmentID].Vertices)
+            {
+                center += vector;
+            }
+
+            center /= segments[segmentID].Vertices.Count;
+
+            return center;
         }
     }
 }

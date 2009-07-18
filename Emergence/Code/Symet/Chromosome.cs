@@ -12,7 +12,8 @@ namespace Emergence
         None,
         Attack,
         Defend,
-        Photo
+        Photo,
+        Movement
     }
 
     // A polar coordinate
@@ -67,6 +68,7 @@ namespace Emergence
         int parentFace;
         Dictionary<int, int> faces;
         SegmentType type;
+        Vector2 movementVector;
 
         # region Properties
 
@@ -86,6 +88,17 @@ namespace Emergence
             set
             {
                 this.active = value;
+            }
+        }
+        public Vector2 MovementVector
+        {
+            get
+            {
+                return this.movementVector;
+            }
+            set
+            {
+                this.movementVector = value;
             }
         }
         public int ID
@@ -137,7 +150,7 @@ namespace Emergence
 
         // Functions
 
-        public Chromosome(List<VectorP> instructions, int id, int parentID, int parentFace, SegmentType type)
+        public Chromosome(List<VectorP> instructions, int id, int parentID, int parentFace, SegmentType type, Vector2 movementVector)
         {
             this.instructions = new List<VectorP>(instructions);
             this.id = id;
@@ -145,6 +158,7 @@ namespace Emergence
             this.parentFace = parentFace;
             this.faces = new Dictionary<int, int>();
             this.type = type;
+            this.movementVector = movementVector;
 
             // Set up the faces
             faces.Add(0, parentID);
@@ -152,7 +166,7 @@ namespace Emergence
             {
                 faces.Add(i, -1);
             }
-            
+
             this.active = true;
         }
 

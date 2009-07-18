@@ -22,6 +22,7 @@ namespace Emergence
         SegmentType type;
         int hitPoints;
         int maxHitPoints;
+        float volume;
 
         # region Properties
 
@@ -142,6 +143,17 @@ namespace Emergence
                 this.maxHitPoints = value;
             }
         }
+        public float Volume
+        {
+            get
+            {
+                return this.volume;
+            }
+            set
+            {
+                this.volume = value;
+            }
+        }
 
         #endregion
 
@@ -150,7 +162,7 @@ namespace Emergence
         public Segment()
         {
         }
-
+        
         public Segment(List<Vector2> vertices, int id, int parentID, int parentFace, SegmentType type)
         {
             this.vertices = new List<Vector2>(vertices);
@@ -166,37 +178,18 @@ namespace Emergence
                 faces.Add(i, -1);
             }
 
-            hitPoints = 100;
-            maxHitPoints = 100;
             this.alive = true;
+
+            this.volume = Symet.CalculateArea(vertices);
+            
+            maxHitPoints = Convert.ToInt32(volume / 10.0f);
+            hitPoints = maxHitPoints;
         }
 
         public int Update(GameTime gameTime)
         {
 
             return 1;
-        }
-
-        public static Color GetColor(SegmentType type)
-        {
-            switch (type)
-            {
-                case SegmentType.None:
-                    break;
-                case SegmentType.Attack:
-                    return Color.Red;
-                    break;
-                case SegmentType.Defend:
-                    return Color.Blue;
-                    break;
-                case SegmentType.Photo:
-                    return Color.Green;
-                    break;
-                default:
-                    break;
-            }
-
-            return Color.Black;
         }
     }
 }
