@@ -192,6 +192,7 @@ namespace Emergence
             spnMutRate.Value = Game1.GetGlobals().MutationRate;
             spnMutRate.Step = 1;
             spnMutRate.Passive = true;
+            spnMutRate.Text = Convert.ToString(spnMutRate.Value);
             spnMutRate.Parent = wndSettings;
 
             lblSolar = new Label(manager);
@@ -216,6 +217,7 @@ namespace Emergence
             spnSolar.Step = 1;
             spnSolar.Value = Game1.GetGlobals().SolarIntensity;
             spnSolar.Passive = true;
+            spnSolar.Text = Convert.ToString(spnSolar.Value);
             spnSolar.Parent = wndSettings;
 
             lblLifeSpan = new Label(manager);
@@ -240,6 +242,7 @@ namespace Emergence
             spnLifeSpan.Step = 1;
             spnLifeSpan.Value = Game1.GetGlobals().SymetLifespan;
             spnLifeSpan.Passive = true;
+            spnLifeSpan.Text = Convert.ToString(spnLifeSpan.Value);
             spnLifeSpan.Parent = wndSettings;
 
             lblSpeed = new Label(manager);
@@ -263,6 +266,7 @@ namespace Emergence
             spnSpeed.Rounding = 0;
             spnSpeed.Step = 1;
             spnSpeed.Value = Game1.GetGlobals().SymetSpeed;
+            spnSpeed.Text = Convert.ToString(spnSpeed.Value);
             spnSpeed.Passive = true;
             spnSpeed.Parent = wndSettings;
 
