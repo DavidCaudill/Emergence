@@ -160,7 +160,7 @@ namespace Emergence
             for (int i = 0; i < randomNumber; i++)
             {
                 lastMovementSegment += dna.MovementFrequency;
-                if (lastMovementSegment >= Convert.ToSingle(movementSegments.Count + .5f))
+                while (lastMovementSegment >= Convert.ToSingle(movementSegments.Count + .5f))
                     lastMovementSegment -= Convert.ToSingle(movementSegments.Count);
             }
 
@@ -169,7 +169,7 @@ namespace Emergence
             for (int i = 0; i < randomNumber; i++)
             {
                 lastMovementArm += dna.MovementFrequency;
-                if (lastMovementArm >= Convert.ToSingle(arms.Count() + .5f))
+                while (lastMovementArm >= Convert.ToSingle(arms.Count() + .5f))
                     lastMovementArm -= Convert.ToSingle(arms.Count());
             }
         }
@@ -249,7 +249,7 @@ namespace Emergence
                 // Figure out what segment of an arm needs to fire
                 int segmentTofire = 0;
                 lastMovementSegment += dna.MovementFrequency;
-                if (lastMovementSegment >= Convert.ToSingle(movementSegments.Count + .5f))
+                while (lastMovementSegment >= Convert.ToSingle(movementSegments.Count + .5f))
                     lastMovementSegment -= Convert.ToSingle(movementSegments.Count);
 
                 segmentTofire = Convert.ToInt32(lastMovementSegment);
@@ -257,7 +257,7 @@ namespace Emergence
                 // Figure out what arm that segment should come from
                 int armToFire = 0;
                 lastMovementArm += dna.MovementFrequency;
-                if (lastMovementArm >= Convert.ToSingle(arms.Count() + .5f))
+                while (lastMovementArm >= Convert.ToSingle(arms.Count() + .5f))
                     lastMovementArm -= Convert.ToSingle(arms.Count());
 
                 armToFire = Convert.ToInt32(lastMovementArm);
@@ -278,12 +278,6 @@ namespace Emergence
                     angularVelocity += tempMovement.Length() * Convert.ToSingle(Math.Sin(tempAngle)) / tempVector.Length() * .14f; 
 
                     velocity += tempMovement;
-
-                    // Cap the angular velocity
-                    if (angularVelocity > .25f)
-                        angularVelocity = .25f;
-                    if (angularVelocity < -.25f)
-                        angularVelocity = -.25f;
                 }
             }
             lastMovementFire += gameTime.ElapsedGameTime.Milliseconds;

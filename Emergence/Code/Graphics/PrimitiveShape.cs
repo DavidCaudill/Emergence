@@ -80,7 +80,7 @@ namespace Emergence
 
 		public void Draw(PrimitiveBatch batch)
 		{
-            //batch.Begin(PrimitiveType.LineList);
+            batch.Begin(PrimitiveType.LineList);
 
             if (recalculate)
             {
@@ -114,7 +114,7 @@ namespace Emergence
                     break;
             }
 			
-			//batch.End();
+			batch.End();
 		}
 
 		private void CalculatePointsAndBounds()
