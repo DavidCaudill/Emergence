@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -43,7 +44,7 @@ namespace Emergence
         private Button btnSettingsClose;
 
 
-        public void GuiInitialize(Manager manager, GraphicsDeviceManager graphics)
+        public void GuiInitialize(Manager manager, GraphicsDeviceManager graphics, Settings Globals)
         {
             // Create and setup Window control.
             BottomBar = new Window(manager);
@@ -188,7 +189,7 @@ namespace Emergence
             spnMutRate.Maximum = 10;
             spnMutRate.Minimum = 0;
             spnMutRate.Rounding = 0;
-            spnMutRate.Value = 5;
+            spnMutRate.Value = Globals.MutationRate;
             spnMutRate.Step = 1;
             spnMutRate.Passive = true;
             spnMutRate.Parent = wndSettings;
@@ -213,7 +214,7 @@ namespace Emergence
             spnSolar.Minimum = 0;
             spnSolar.Rounding = 0;
             spnSolar.Step = 1;
-            spnSolar.Value = 5;
+            spnSolar.Value = Globals.SolarIntensity;
             spnSolar.Passive = true;
             spnSolar.Parent = wndSettings;
 
@@ -237,7 +238,7 @@ namespace Emergence
             spnLifeSpan.Minimum = 0;
             spnLifeSpan.Rounding = 0;
             spnLifeSpan.Step = 1;
-            spnLifeSpan.Value = 15;
+            spnLifeSpan.Value = Globals.SymetLifespan;
             spnLifeSpan.Passive = true;
             spnLifeSpan.Parent = wndSettings;
 
@@ -261,7 +262,7 @@ namespace Emergence
             spnSpeed.Minimum = 0;
             spnSpeed.Rounding = 0;
             spnSpeed.Step = 1;
-            spnSpeed.Value = 5;
+            spnSpeed.Value = Globals.SymetSpeed;
             spnSpeed.Passive = true;
             spnSpeed.Parent = wndSettings;
 
@@ -294,6 +295,17 @@ namespace Emergence
 
         public void btnDone_Click(object sender, MouseEventArgs e)
         {
+            //save settings
+            IniHandler ini = new IniHandler();
+            System.Reflection.Assembly a = System.Reflection.Assembly.GetEntryAssembly();
+            string path = Directory.GetCurrentDirectory() + "\\Settings.ini";
+            ini.IniFile(path);
+
+            ini.IniWriteValue("Settings", "MutationRate", Convert.ToString(spnMutRate.Value));
+            ini.IniWriteValue("Settings", "SolarIntensity", Convert.ToString(spnSolar.Value));
+            ini.IniWriteValue("Settings", "SymetLifespan", Convert.ToString(spnLifeSpan.Value));
+            ini.IniWriteValue("Settings", "SymetSpeed", Convert.ToString(spnSpeed.Value));
+
             wndSettings.Visible = false;
         }
 

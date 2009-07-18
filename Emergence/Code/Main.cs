@@ -22,7 +22,7 @@ namespace Emergence
         PrimitiveBatch primitiveBatch;
         EmergenceGui Gui;
         Manager manager;
-
+        Settings Globals;
         DNA dna1;
         Symet symet1;
         List<Symet> symets;
@@ -38,7 +38,7 @@ namespace Emergence
         {
             graphics = new GraphicsDeviceManager(this);
             Gui = new EmergenceGui();
-
+            Globals = new Settings();
             manager = new Manager(this, graphics, "Default", true);
             manager.SkinDirectory = @"..\..\..\Content\Skins\";
 
@@ -94,11 +94,12 @@ namespace Emergence
 
             base.Initialize();
 
-            Gui.GuiInitialize(manager, graphics);
+            Gui.GuiInitialize(manager, graphics, Globals);
         }
 
         protected override void LoadContent()
         {
+            Globals.Load();
             spriteBatch = new SpriteBatch(GraphicsDevice);
             primitiveBatch = new PrimitiveBatch(GraphicsDevice);
         }

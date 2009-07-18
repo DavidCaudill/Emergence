@@ -94,6 +94,8 @@
     <Compile Include="Code\Gui\Forms.cs" />
     <Compile Include="Code\Main.cs" />
     <Compile Include="Code\Program.cs" />
+    <Compile Include="Code\Settings.cs" />
+    <Compile Include="Code\SettingsIO.cs" />
     <Compile Include="Code\Symet\Arm.cs" />
     <Compile Include="Code\Symet\Chromosome.cs" />
     <Compile Include="Code\Symet\DNA.cs" />
