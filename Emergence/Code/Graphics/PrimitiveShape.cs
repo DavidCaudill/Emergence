@@ -12,6 +12,26 @@ namespace Emergence
         LineList
     }
 
+    public struct LineHits
+    {
+        public Vector2 line1a;
+        public Vector2 line1b;
+        public int line1WorldID;
+        public Vector2 line2a;
+        public Vector2 line2b;
+        public int line2WorldID;
+
+        public LineHits(Vector2 line1a, Vector2 line1b, int line1WorldID, Vector2 line2a, Vector2 line2b, int line2WorldID)
+        {
+            this.line1a = line1a;
+            this.line1b = line1b;
+            this.line1WorldID = line1WorldID;
+            this.line2a = line2a;
+            this.line2b = line2b;
+            this.line2WorldID = line2WorldID;
+        }
+    }
+
 	public class PrimitiveShape
 	{
 		public Color ShapeColor = Color.White;
@@ -78,15 +98,18 @@ namespace Emergence
 			CalculatePointsAndBounds();
 		}
 
-		public void Draw(PrimitiveBatch batch)
-		{
-            batch.Begin(PrimitiveType.LineList);
-
+        public void Update()
+        {
             if (recalculate)
             {
                 CalculatePointsAndBounds();
                 recalculate = false;
             }
+        }
+
+		public void Draw(PrimitiveBatch batch)
+		{
+            batch.Begin(PrimitiveType.LineList);
 
             switch (type)
             {
@@ -158,42 +181,75 @@ namespace Emergence
 			return oddNodes;
 		}
 
-		public static bool TestCollision(PrimitiveShape shape1, PrimitiveShape shape2)
-		{
-			if (shape1.Bounds.Intersects(shape2.Bounds))
-			{
-				//simple check if the first polygon contains any points from the second
-				for (int i = 0; i < shape2.transformedVertices.Length; i++)
-					if (shape1.ContainsPoint(shape2.transformedVertices[i]))
-						return true;
+        public static bool TestCollision(PrimitiveShape shape1, PrimitiveShape shape2)
+        {
+            if (shape1.Bounds.Intersects(shape2.Bounds))
+            {
+                //simple check if the first polygon contains any points from the second
+                for (int i = 0; i < shape2.transformedVertices.Length; i++)
+                    if (shape1.ContainsPoint(shape2.transformedVertices[i]))
+                        return true;
 
-				//switch around and test the other way
-				for (int i = 0; i < shape1.transformedVertices.Length; i++)
-					if (shape2.ContainsPoint(shape1.transformedVertices[i]))
-						return true;
+                //switch around and test the other way
+                for (int i = 0; i < shape1.transformedVertices.Length; i++)
+                    if (shape2.ContainsPoint(shape1.transformedVertices[i]))
+                        return true;
 
-				//now we have to check for line segment intersections
-				for (int i = 0; i < shape1.transformedVertices.Length; i++)
-				{
-					//get the two points from a segment on shape 1
-					Vector2 a = shape1.transformedVertices[i];
-					Vector2 b = shape1.transformedVertices[(i + 1) % shape1.transformedVertices.Length];
+                //now we have to check for line segment intersections
+                for (int i = 0; i < shape1.transformedVertices.Length; i++)
+                {
+                    //get the two points from a segment on shape 1
+                    Vector2 a = shape1.transformedVertices[i];
+                    Vector2 b = shape1.transformedVertices[(i + 1) % shape1.transformedVertices.Length];
 
-					for (int j = 0; j < shape2.transformedVertices.Length; j++)
-					{
-						//get two points from a segment on shape 2
-						Vector2 c = shape2.transformedVertices[j];
-						Vector2 d = shape2.transformedVertices[(j + 1) % shape2.transformedVertices.Length];
+                    for (int j = 0; j < shape2.transformedVertices.Length; j++)
+                    {
+                        //get two points from a segment on shape 2
+                        Vector2 c = shape2.transformedVertices[j];
+                        Vector2 d = shape2.transformedVertices[(j + 1) % shape2.transformedVertices.Length];
 
-						//figure out of we have an intersection
-						if (segmentsIntersect(a, b, c, d))
-							return true;
-					}
-				}
-			}
+                        //figure out of we have an intersection
+                        if (segmentsIntersect(a, b, c, d))
+                            return true;
+                    }
+                }
+            }
 
-			return false;
-		}
+            return false;
+        }
+
+        
+        public static List<LineHits> TestCollisionFull(PrimitiveShape shape1, int shape1ID, PrimitiveShape shape2, int shape2ID)
+        {
+            List<LineHits> hitVertices = new List<LineHits>();
+
+            if (shape1.Bounds.Intersects(shape2.Bounds))
+            {
+                //now we have to check for line segment intersections
+                for (int i = 0; i < shape1.transformedVertices.Length; i++)
+                {
+                    //get the two points from a segment on shape 1
+                    Vector2 a = shape1.transformedVertices[i];
+                    Vector2 b = shape1.transformedVertices[(i + 1) % shape1.transformedVertices.Length];
+
+                    for (int j = 0; j < shape2.transformedVertices.Length; j++)
+                    {
+                        //get two points from a segment on shape 2
+                        Vector2 c = shape2.transformedVertices[j];
+                        Vector2 d = shape2.transformedVertices[(j + 1) % shape2.transformedVertices.Length];
+
+                        //figure out of we have an intersection
+                        if (segmentsIntersect(a, b, c, d))
+                        {
+                            hitVertices.Add(new LineHits(a, b, shape1ID, c, d, shape2ID));
+                            return hitVertices;
+                        }
+                    }
+                }
+            }
+
+            return hitVertices;
+        }
 
 		//thanks to Joseph Duchesne for this method
 		//http://www.idevgames.com/forum/showthread.php?t=7458

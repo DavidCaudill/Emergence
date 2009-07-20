@@ -39,8 +39,32 @@ namespace Emergence
         int lastRegen;
         int energy;
 
+        int worldID;
+
         # region Properties
 
+        public PrimitiveShape Skeleton
+        {
+            get
+            {
+                return this.skeleton;
+            }
+            set
+            {
+                this.skeleton = value;
+            }
+        }
+        public int WorldID
+        {
+            get
+            {
+                return this.worldID;
+            }
+            set
+            {
+                this.worldID = value;
+            }
+        }
         public Vector2 Position
         {
             get
@@ -119,10 +143,10 @@ namespace Emergence
             this.angularVelocity = 0;
 
             // Start off with some BATTLE DAMAGE for show
-            arms[0].SetSegmentAlive(1, false);
-            arms[1].SetSegmentAlive(3, false);
-            arms[2].SetSegmentAlive(2, false);
-            arms[2].SetSegmentAlive(5, false);
+            //arms[0].SetSegmentAlive(1, false);
+            //arms[1].SetSegmentAlive(3, false);
+            //arms[2].SetSegmentAlive(2, false);
+            //arms[2].SetSegmentAlive(5, false);
 
             BuildSkeleton();
 
@@ -160,8 +184,8 @@ namespace Emergence
             for (int i = 0; i < randomNumber; i++)
             {
                 lastMovementSegment += dna.MovementFrequency;
-                while (lastMovementSegment >= Convert.ToSingle(movementSegments.Count + .5f))
-                    lastMovementSegment -= Convert.ToSingle(movementSegments.Count);
+                while (lastMovementSegment >= Convert.ToSingle(movementSegments.Count + .49999f))
+                    lastMovementSegment -= Convert.ToSingle(movementSegments.Count - .00002f);
             }
 
             randomNumber = Game1.GetRandom().Next(100);
@@ -169,8 +193,8 @@ namespace Emergence
             for (int i = 0; i < randomNumber; i++)
             {
                 lastMovementArm += dna.MovementFrequency;
-                while (lastMovementArm >= Convert.ToSingle(arms.Count() + .5f))
-                    lastMovementArm -= Convert.ToSingle(arms.Count());
+                while (lastMovementArm >= Convert.ToSingle(arms.Count() + .49999f))
+                    lastMovementArm -= Convert.ToSingle(arms.Count() - .00002f);
             }
         }
 
@@ -215,6 +239,9 @@ namespace Emergence
             if (tempRebuildBool)
                 BuildSkeleton();
 
+            skeleton.Update();
+            segmentDividers.Update();
+
             return 1;
         }
 
@@ -223,8 +250,8 @@ namespace Emergence
             skeleton.Draw(primitiveBatch);
             segmentDividers.Draw(primitiveBatch);
 
-            List<Vector2> vertices = new List<Vector2>();
-            List<Color> colors = new List<Color>();
+            //List<Vector2> vertices = new List<Vector2>();
+            //List<Color> colors = new List<Color>();
 
             // This code will draw white boxes around the symet
             //vertices.Add(new Vector2(skeleton.Bounds.l, skeleton.Bounds.t));
@@ -240,6 +267,7 @@ namespace Emergence
             return 1;
         }
 
+
         private int DoMovement(GameTime gameTime)
         {
             if (lastMovementFire > (dna.MovementFrequency ) * 1000)
@@ -249,16 +277,16 @@ namespace Emergence
                 // Figure out what segment of an arm needs to fire
                 int segmentTofire = 0;
                 lastMovementSegment += dna.MovementFrequency;
-                while (lastMovementSegment >= Convert.ToSingle(movementSegments.Count + .5f))
-                    lastMovementSegment -= Convert.ToSingle(movementSegments.Count);
+                while (lastMovementSegment >= Convert.ToSingle(movementSegments.Count + .49999f))
+                    lastMovementSegment -= Convert.ToSingle(movementSegments.Count - .00002f);
 
                 segmentTofire = Convert.ToInt32(lastMovementSegment);
 
                 // Figure out what arm that segment should come from
                 int armToFire = 0;
                 lastMovementArm += dna.MovementFrequency;
-                while (lastMovementArm >= Convert.ToSingle(arms.Count() + .5f))
-                    lastMovementArm -= Convert.ToSingle(arms.Count());
+                while (lastMovementArm >= Convert.ToSingle(arms.Count() + .49999f))
+                    lastMovementArm -= Convert.ToSingle(arms.Count() - .00002f);
 
                 armToFire = Convert.ToInt32(lastMovementArm);
 
@@ -287,7 +315,7 @@ namespace Emergence
             Position += velocity;
 
             // Dampen the velocities
-            angularVelocity *= .975f;
+            angularVelocity *= .96f;
             velocity *= .96f;
             return 1;
         }

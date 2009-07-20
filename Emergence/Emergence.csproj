@@ -93,6 +93,7 @@
     <Compile Include="Code\Graphics\PrimitiveShape.cs" />
     <Compile Include="Code\Gui\Forms.cs" />
     <Compile Include="Code\Main.cs" />
+    <Compile Include="Code\Physics\Physics.cs" />
     <Compile Include="Code\Program.cs" />
     <Compile Include="Code\Settings.cs" />
     <Compile Include="Code\SettingsIO.cs" />
