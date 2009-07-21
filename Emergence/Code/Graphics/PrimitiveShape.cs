@@ -185,6 +185,7 @@ namespace Emergence
         {
             if (shape1.Bounds.Intersects(shape2.Bounds))
             {
+                //return true;
                 //simple check if the first polygon contains any points from the second
                 for (int i = 0; i < shape2.transformedVertices.Length; i++)
                     if (shape1.ContainsPoint(shape2.transformedVertices[i]))
@@ -195,6 +196,7 @@ namespace Emergence
                     if (shape2.ContainsPoint(shape1.transformedVertices[i]))
                         return true;
 
+                return true;
                 //now we have to check for line segment intersections
                 for (int i = 0; i < shape1.transformedVertices.Length; i++)
                 {

@@ -47,23 +47,33 @@ namespace Emergence
         {
         }
 
-        public List<SymetMovmentUpdate> DoCollision(Dictionary<int, Symet> symets)
+        public List<SymetMovmentUpdate> DoCollision(List<Symet> symets)
         {
             List<SymetMovmentUpdate> updates = new List<SymetMovmentUpdate>();
 
             List<int> skipList = new List<int>();
-            foreach (Symet symet1 in symets.Values)
+
+            for (int i = 0; i < symets.Count; i++)
             {
-                skipList.Add(symet1.WorldID);
-
-                foreach (Symet symet2 in symets.Values)
+                for (int j = i+1; j < symets.Count; j++)
                 {
-                    if(skipList.Contains(symet2.WorldID))
-                        continue;
-
-                    List<LineHits> hits = PrimitiveShape.TestCollisionFull(symet1.Skeleton, symet1.WorldID, symet2.Skeleton, symet2.WorldID);
+                    PrimitiveShape.TestCollision(symets[i].Skeleton, symets[j].Skeleton);
                 }
             }
+            //foreach (Symet symet1 in symets.Values)
+            //{
+            //    skipList.Add(symet1.WorldID);
+
+            //    foreach (Symet symet2 in symets.Values)
+            //    {
+            //        foreach (Int16 id in skipList)
+            //            if (id == symet2.WorldID)
+            //                continue;
+
+            //        //PrimitiveShape.TestCollision(symet1.Skeleton, symet2.Skeleton);
+            //        //List<LineHits> hits = PrimitiveShape.TestCollisionFull(symet1.Skeleton, symet1.WorldID, symet2.Skeleton, symet2.WorldID);
+            //    }
+            //}
 
             return updates;
         }

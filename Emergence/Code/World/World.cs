@@ -10,7 +10,7 @@ namespace Emergence
 {
     class World
     {
-        Dictionary<int, Symet> symets;
+        List<Symet> symets;
         int worldIDCounter;
 
         PrimitiveShape shape1HitOverlay;
@@ -38,7 +38,7 @@ namespace Emergence
             List<VectorP> instructions1 = new List<VectorP>();
             List<VectorP> instructions2 = new List<VectorP>();
             List<VectorP> instructions3 = new List<VectorP>();
-            symets = new Dictionary<int, Symet>();
+            symets = new List<Symet>();
 
             instructions1.Add(new VectorP(1.2, 5));
             instructions1.Add(new VectorP(.7, 6));
@@ -68,14 +68,14 @@ namespace Emergence
             dna2.CreateChromosome(instructions3, 1, 2, SegmentType.Defend, new Vector2());
 
             Symet symet = new Symet();
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 150; i++)
             {
                 symet = dna1.BuildDNA();
                 symet.Position = new Vector2(0 +i*15);
                 AddSymet(symet);
                 
             }
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 150; i++)
             {
                 symet = dna2.BuildDNA();
                 symet.Position = new Vector2(0 +i*15);
@@ -181,8 +181,8 @@ namespace Emergence
         {
             int tempID = GetWorldID();
 
-            symets.Add(tempID, symet);
             symet.WorldID = tempID;
+            symets.Add(symet);
 
             return tempID;
         }
