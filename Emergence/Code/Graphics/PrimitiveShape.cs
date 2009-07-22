@@ -32,6 +32,20 @@ namespace Emergence
         }
     }
 
+    public struct PointHits
+    {
+        public Vector2 point;
+        public int shape1ID;
+        public int shape2ID;
+
+        public PointHits(Vector2 point, int shape1ID, int shape2ID)
+        {
+            this.point = point;
+            this.shape1ID = shape1ID;
+            this.shape2ID = shape2ID;
+        }
+    }
+
 	public class PrimitiveShape
 	{
 		public Color ShapeColor = Color.White;
@@ -180,6 +194,27 @@ namespace Emergence
 
 			return oddNodes;
 		}
+
+        public static List<PointHits> TestCollisionPoint(PrimitiveShape shape1, int shape1ID, PrimitiveShape shape2, int shape2ID)
+        {
+            List<PointHits> hits = new List<PointHits>();
+
+            if (shape1.Bounds.Intersects(shape2.Bounds))
+            {
+                //return hits;
+                //simple check if the first polygon contains any points from the second
+                for (int i = 0; i < shape2.transformedVertices.Length; i++)
+                    if (shape1.ContainsPoint(shape2.transformedVertices[i]))
+                        hits.Add(new PointHits(shape2.vertices[i], shape1ID, shape2ID));
+
+                //switch around and test the other way
+                for (int i = 0; i < shape1.transformedVertices.Length; i++)
+                    if (shape2.ContainsPoint(shape1.transformedVertices[i]))
+                        hits.Add(new PointHits(shape1.vertices[i], shape1ID, shape2ID));
+            }
+
+            return hits;
+        }
 
         public static bool TestCollision(PrimitiveShape shape1, PrimitiveShape shape2)
         {

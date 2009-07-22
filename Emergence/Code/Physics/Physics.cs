@@ -55,25 +55,14 @@ namespace Emergence
 
             for (int i = 0; i < symets.Count; i++)
             {
+                //if (symets[i].Velocity.Length() == new Vector2(0).Length() && symets[i].AngularVelocity == 0)
+                //    continue;
+
                 for (int j = i+1; j < symets.Count; j++)
                 {
-                    PrimitiveShape.TestCollision(symets[i].Skeleton, symets[j].Skeleton);
+                    PrimitiveShape.TestCollisionPoint(symets[i].Skeleton, symets[i].WorldID, symets[j].Skeleton, symets[j].WorldID);
                 }
             }
-            //foreach (Symet symet1 in symets.Values)
-            //{
-            //    skipList.Add(symet1.WorldID);
-
-            //    foreach (Symet symet2 in symets.Values)
-            //    {
-            //        foreach (Int16 id in skipList)
-            //            if (id == symet2.WorldID)
-            //                continue;
-
-            //        //PrimitiveShape.TestCollision(symet1.Skeleton, symet2.Skeleton);
-            //        //List<LineHits> hits = PrimitiveShape.TestCollisionFull(symet1.Skeleton, symet1.WorldID, symet2.Skeleton, symet2.WorldID);
-            //    }
-            //}
 
             return updates;
         }

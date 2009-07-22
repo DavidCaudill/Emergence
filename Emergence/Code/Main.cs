@@ -53,6 +53,7 @@ namespace Emergence
 
             IsMouseVisible = true;
             IsFixedTimeStep = true;
+            TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 1000 / 20);
             
             graphics.SynchronizeWithVerticalRetrace = false;
 

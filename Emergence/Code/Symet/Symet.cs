@@ -54,6 +54,17 @@ namespace Emergence
                 this.skeleton = value;
             }
         }
+        public float AngularVelocity
+        {
+            get
+            {
+                return this.angularVelocity;
+            }
+            set
+            {
+                this.angularVelocity = value;
+            }
+        }
         public int WorldID
         {
             get
@@ -76,6 +87,18 @@ namespace Emergence
                 this.position = value;
                 skeleton.Position = value;
                 segmentDividers.Position = value;
+            }
+        }
+
+        public Vector2 Velocity
+        {
+            get
+            {
+                return this.velocity;
+            }
+            set
+            {
+                this.velocity = value;
             }
         }
         public double Rotation
@@ -143,10 +166,10 @@ namespace Emergence
             this.angularVelocity = 0;
 
             // Start off with some BATTLE DAMAGE for show
-            //arms[0].SetSegmentAlive(1, false);
-            //arms[1].SetSegmentAlive(3, false);
-            //arms[2].SetSegmentAlive(2, false);
-            //arms[2].SetSegmentAlive(5, false);
+            arms[0].SetSegmentAlive(1, false);
+            arms[1].SetSegmentAlive(3, false);
+            arms[2].SetSegmentAlive(2, false);
+            arms[2].SetSegmentAlive(5, false);
 
             BuildSkeleton();
 
@@ -306,17 +329,25 @@ namespace Emergence
                     angularVelocity += tempMovement.Length() * Convert.ToSingle(Math.Sin(tempAngle)) / tempVector.Length() * .14f; 
 
                     velocity += tempMovement;
+
                 }
             }
             lastMovementFire += gameTime.ElapsedGameTime.Milliseconds;
 
             // Update position and rotation
-            Rotation += angularVelocity;
-            Position += velocity;
+            Rotation += angularVelocity * gameTime.ElapsedGameTime.Milliseconds / 15;
+            Position += velocity * gameTime.ElapsedGameTime.Milliseconds / 15;
 
             // Dampen the velocities
             angularVelocity *= .96f;
             velocity *= .96f;
+
+            if (velocity.Length() < new Vector2(.1f).Length())
+                velocity = Vector2.Zero;
+
+            if (angularVelocity < .005f)
+                angularVelocity = 0;
+
             return 1;
         }
 
