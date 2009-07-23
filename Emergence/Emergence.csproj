@@ -102,6 +102,7 @@
     <Compile Include="Code\Symet\DNA.cs" />
     <Compile Include="Code\Symet\Segment.cs" />
     <Compile Include="Code\Symet\Symet.cs" />
+    <Compile Include="Code\World\Editor.cs" />
     <Compile Include="Code\World\World.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

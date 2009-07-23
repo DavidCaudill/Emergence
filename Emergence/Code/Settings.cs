@@ -30,6 +30,9 @@ namespace Emergence
         public bool SiblingCanAttack = true;
         public bool SoundsOn = true;
 
+        public bool Editing = false;
+        public string Tool = "Grab";
+
 
         public void Load()
         {

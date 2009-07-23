@@ -28,6 +28,7 @@ namespace Emergence
         private RadioButton radGrab;
         private Button btnSettings;
         private Button btnSample;
+        private Button btnEdit;
         private Button btnSave;
         private Button btnLoad;
 
@@ -70,6 +71,7 @@ namespace Emergence
             textbox.Top = 0;
             textbox.Parent = BottomBar;
 
+            #region BottomBar
             // Create Tool Select.
             radStimulant = new RadioButton(manager);
             radStimulant.Init();
@@ -79,7 +81,8 @@ namespace Emergence
             radStimulant.Width = 100;
             radStimulant.Height = 16;
             radStimulant.Text = "Stimulant";
-            radStimulant.Checked = true;
+            radStimulant.Checked = false;
+            radStimulant.Click += new MouseEventHandler(Tool_Click);
 
             radPoison = new RadioButton(manager);
             radPoison.Init();
@@ -90,6 +93,7 @@ namespace Emergence
             radPoison.Height = 16;
             radPoison.Text = "Poison";
             radPoison.Checked = false;
+            radPoison.Click += new MouseEventHandler(Tool_Click);
 
             radMutigen = new RadioButton(manager);
             radMutigen.Init();
@@ -100,6 +104,7 @@ namespace Emergence
             radMutigen.Height = 16;
             radMutigen.Text = "Mutigen";
             radMutigen.Checked = false;
+            radMutigen.Click += new MouseEventHandler(Tool_Click);
 
             radGrab = new RadioButton(manager);
             radGrab.Init();
@@ -109,7 +114,8 @@ namespace Emergence
             radGrab.Width = 100;
             radGrab.Height = 16;
             radGrab.Text = "Grab";
-            radGrab.Checked = false;
+            radGrab.Checked = true;
+            radGrab.Click += new MouseEventHandler(Tool_Click);
 
             // Create Settings button.
             btnSettings = new Button(manager);
@@ -135,6 +141,18 @@ namespace Emergence
             btnSample.Parent = BottomBar;
             btnSample.Click += new MouseEventHandler(btnSample_Click);
 
+            // Create Edit button.
+            btnEdit = new Button(manager);
+            btnEdit.Init();
+            btnEdit.Text = "Edit";
+            btnEdit.Width = 72;
+            btnEdit.Height = 24;
+            btnEdit.Left = textbox.Left + textbox.Width - btnEdit.Width;
+            btnEdit.Top = textbox.Top + textbox.Height + 10;
+            btnEdit.Anchor = Anchors.Bottom;
+            btnEdit.Parent = BottomBar;
+            btnEdit.Click += new MouseEventHandler(btnEdit_Click);
+
             // Create Save Button.
             btnSave = new Button(manager);
             btnSave.Init();
@@ -156,7 +174,9 @@ namespace Emergence
             btnLoad.Top = 44;
             btnLoad.Anchor = Anchors.Bottom;
             btnLoad.Parent = BottomBar;
+#endregion
 
+            #region SettingsPane
             //Create Settings Pane
             wndSettings = new Window(manager);
             wndSettings.Init();
@@ -281,15 +301,43 @@ namespace Emergence
             btnSettingsClose.Anchor = Anchors.Bottom;
             btnSettingsClose.Parent = wndSettings;
             btnSettingsClose.Click += new MouseEventHandler(btnDone_Click);
+            #endregion
 
             // Add the window controls to the manager processing queue.
             manager.Add(BottomBar);
             manager.Add(wndSettings);
         }
 
+        public void Tool_Click(object sender, MouseEventArgs e)
+        {
+            if (radStimulant.Checked)
+                Game1.GetGlobals().Tool="Stimulant";
+            if (radPoison.Checked)
+                Game1.GetGlobals().Tool="Poison";
+            if (radMutigen.Checked)
+                Game1.GetGlobals().Tool="Mutigen";
+            if (radGrab.Checked)
+                Game1.GetGlobals().Tool="Grab";
+
+        }
+
         public void btnSample_Click(object sender, MouseEventArgs e)
         {
             
+        }
+
+        public void btnEdit_Click(object sender, MouseEventArgs e)
+        {
+            if (!Game1.GetGlobals().Editing)
+            {
+                Game1.GetGlobals().Editing = true;
+                btnEdit.Text = "Done";
+            }
+            else
+            {
+                Game1.GetGlobals().Editing = false;
+                btnEdit.Text= "Edit";
+            }
         }
 
         public void btnSettings_Click(object sender, MouseEventArgs e)

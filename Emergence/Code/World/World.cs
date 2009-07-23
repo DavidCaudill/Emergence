@@ -17,6 +17,7 @@ namespace Emergence
         PrimitiveShape shape2HitOverlay;
         bool drawOverlays;
 
+        Editor editor;
         Physics physics;
 
         public World()
@@ -25,6 +26,7 @@ namespace Emergence
 
         public int TestInitialize()
         {
+            editor = new Editor();
             physics = new Physics();
 
             worldIDCounter = 0;
@@ -53,83 +55,42 @@ namespace Emergence
             instructions3.Add(new VectorP(.8, 14));
             instructions3.Add(new VectorP(1.0, 10));
 
-            dna1.CreateChromosome(instructions1, 0, 1, SegmentType.Attack, new Vector2(3, -5));
+            dna1.CreateChromosome(instructions1, 0, 1, SegmentType.Movement, new Vector2(3, -5));
             dna1.CreateChromosome(instructions1, 1, 1, SegmentType.Attack, new Vector2(5, 4));
-            dna1.CreateChromosome(instructions1, 1, 3, SegmentType.Movement, new Vector2(-5, 6));
+            dna1.CreateChromosome(instructions1, 1, 3, SegmentType.Movement, new Vector2(0, 0));
             dna1.CreateChromosome(instructions2, 2, 2, SegmentType.Attack, new Vector2());
             dna1.CreateChromosome(instructions2, 3, 2, SegmentType.Attack, new Vector2());
             //dna1.CreateChromosome(instructions3, 1, 2, SegmentType.Defend, new Vector2());
 
-            dna2.CreateChromosome(instructions1, 0, 1, SegmentType.Movement, new Vector2(-1, 1));
+            dna2.CreateChromosome(instructions1, 0, 1, SegmentType.Movement, new Vector2(0, 0));
             dna2.CreateChromosome(instructions1, 1, 1, SegmentType.Photo, new Vector2(2, -5));
-            dna2.CreateChromosome(instructions1, 1, 3, SegmentType.Photo, new Vector2(6, 2));
+            dna2.CreateChromosome(instructions1, 1, 3, SegmentType.Movement, new Vector2(6, 2));
             dna2.CreateChromosome(instructions2, 2, 2, SegmentType.Defend, new Vector2(-5, 3));
             dna2.CreateChromosome(instructions2, 3, 2, SegmentType.Defend, new Vector2(6, 6));
             dna2.CreateChromosome(instructions3, 1, 2, SegmentType.Defend, new Vector2());
 
             Symet symet = new Symet();
-            for (int i = 0; i < 75; i++)
+            for (int i = 0; i < 6; i++)
             {
                 symet = dna1.BuildDNA();
-                symet.Position = new Vector2(0 + i * 20, 50);
+                symet.Position = new Vector2(50 + i * 100, 150);
                 AddSymet(symet);
 
             }
-            for (int i = 0; i < 75; i++)
+            for (int i = 0; i < 6; i++)
             {
                 symet = dna2.BuildDNA();
-                symet.Position = new Vector2(0 + i * 20, 150);
+                symet.Position = new Vector2(50 + i * 100, 300);
                 AddSymet(symet);
             }
 
-            for (int i = 0; i < 75; i++)
-            {
-                symet = dna1.BuildDNA();
-                symet.Position = new Vector2(0 + i * 20, 250);
-                AddSymet(symet);
-            }
-
-            for (int i = 0; i < 75; i++)
-            {
-                symet = dna2.BuildDNA();
-                symet.Position = new Vector2(0 + i * 20, 350);
-                AddSymet(symet);
-            }
-
-            for (int i = 0; i < 75; i++)
-            {
-                symet = dna1.BuildDNA();
-                symet.Position = new Vector2(0 + i * 20, 450);
-                AddSymet(symet);
-            }
-            for (int i = 0; i < 75; i++)
-            {
-                symet = dna1.BuildDNA();
-                symet.Position = new Vector2(0 + i * 20, 550);
-                AddSymet(symet);
-            }
-            for (int i = 0; i < 75; i++)
-            {
-                symet = dna1.BuildDNA();
-                symet.Position = new Vector2(0 + i * 20, 550);
-                AddSymet(symet);
-            }
-            for (int i = 0; i < 75; i++)
-            {
-                symet = dna1.BuildDNA();
-                symet.Position = new Vector2(0 + i * 20, 550);
-                AddSymet(symet);
-            }
+            
 
             return 1;
         }
 
         public int Update(GameTime gameTime)
         {
-            // Get mouse position
-            Vector2 mousePosition = new Vector2();
-            mousePosition.X = Mouse.GetState().X;
-            mousePosition.Y = Mouse.GetState().Y;
 
             for (int i = 0; i < symets.Count; i++)
             {
@@ -144,7 +105,15 @@ namespace Emergence
                     symets[i].Scale /= 1.01f;
 
                 // Update all the symets
-                symets[i].Update(gameTime);
+                if (!Game1.GetGlobals().Editing)
+                { 
+                    symets[i].Update(gameTime); 
+                }
+                else
+                {
+                    editor.Update(gameTime, symets, Mouse.GetState()); 
+                }
+
             }
 
             physics.DoCollision(symets);
