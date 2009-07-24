@@ -76,6 +76,17 @@ namespace Emergence
                 this.worldID = value;
             }
         }
+        public int Energy
+        {
+            get
+            {
+                return this.energy;
+            }
+            set
+            {
+                this.energy = value;
+            }
+        }
         public Vector2 Position
         {
             get
@@ -221,6 +232,32 @@ namespace Emergence
             }
         }
 
+        // Update function to grab the symet and keep some of its drawing and structural functions active
+        public int GrabUpdate()
+        {
+            // Update each arm
+            bool tempRebuildBool = false;
+            foreach (Arm arm in arms.Values)
+            {
+                // Find out if we need to rebuild the skeleton
+                if (arm.RebuildSkeleton)
+                {
+                    tempRebuildBool = true;
+                    arm.RebuildSkeleton = false;
+                }
+            }
+
+            if (tempRebuildBool)
+                BuildSkeleton();
+
+            skeleton.Update();
+            segmentDividers.Update();
+
+            velocity = Vector2.Zero;
+            angularVelocity = 0;
+
+            return 1;
+        }
         public int Update(GameTime gameTime)
         {
             // Regenerate any lost hitpoints
@@ -340,7 +377,7 @@ namespace Emergence
 
             // Dampen the velocities
             angularVelocity *= .96f;
-            velocity *= .96f;
+            velocity *= .9f;
 
             if (velocity.Length() < new Vector2(.1f).Length())
                 velocity = Vector2.Zero;

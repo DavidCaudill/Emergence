@@ -55,16 +55,16 @@ namespace Emergence
             instructions3.Add(new VectorP(.8, 14));
             instructions3.Add(new VectorP(1.0, 10));
 
-            dna1.CreateChromosome(instructions1, 0, 1, SegmentType.Movement, new Vector2(3, -5));
+            dna1.CreateChromosome(instructions1, 0, 1, SegmentType.Movement, new Vector2(3, -2));
             dna1.CreateChromosome(instructions1, 1, 1, SegmentType.Attack, new Vector2(5, 4));
             dna1.CreateChromosome(instructions1, 1, 3, SegmentType.Movement, new Vector2(0, 0));
             dna1.CreateChromosome(instructions2, 2, 2, SegmentType.Attack, new Vector2());
             dna1.CreateChromosome(instructions2, 3, 2, SegmentType.Attack, new Vector2());
             //dna1.CreateChromosome(instructions3, 1, 2, SegmentType.Defend, new Vector2());
 
-            dna2.CreateChromosome(instructions1, 0, 1, SegmentType.Movement, new Vector2(0, 0));
+            dna2.CreateChromosome(instructions1, 0, 1, SegmentType.Movement, new Vector2(-2, 1));
             dna2.CreateChromosome(instructions1, 1, 1, SegmentType.Photo, new Vector2(2, -5));
-            dna2.CreateChromosome(instructions1, 1, 3, SegmentType.Movement, new Vector2(6, 2));
+            dna2.CreateChromosome(instructions1, 1, 3, SegmentType.Movement, new Vector2(1, 4));
             dna2.CreateChromosome(instructions2, 2, 2, SegmentType.Defend, new Vector2(-5, 3));
             dna2.CreateChromosome(instructions2, 3, 2, SegmentType.Defend, new Vector2(6, 6));
             dna2.CreateChromosome(instructions3, 1, 2, SegmentType.Defend, new Vector2());
@@ -111,7 +111,7 @@ namespace Emergence
                 }
                 else
                 {
-                    editor.Update(gameTime, symets, Mouse.GetState()); 
+                    editor.Update(gameTime, symets); 
                 }
 
             }
