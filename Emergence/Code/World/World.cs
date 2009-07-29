@@ -70,17 +70,83 @@ namespace Emergence
             dna2.CreateChromosome(instructions3, 1, 2, SegmentType.Defend, new Vector2());
 
             Symet symet = new Symet();
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < 10; i++)
+            {
+                symet = dna1.BuildDNA();
+                symet.Position = new Vector2(50 + i * 100, 50);
+                AddSymet(symet);
+
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                symet = dna2.BuildDNA();
+                symet.Position = new Vector2(50 + i * 100, 100);
+                AddSymet(symet);
+            }
+            for (int i = 0; i < 10; i++)
             {
                 symet = dna1.BuildDNA();
                 symet.Position = new Vector2(50 + i * 100, 150);
                 AddSymet(symet);
-
             }
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < 10; i++)
+            {
+                symet = dna2.BuildDNA();
+                symet.Position = new Vector2(50 + i * 100, 200);
+                AddSymet(symet);
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                symet = dna1.BuildDNA();
+                symet.Position = new Vector2(50 + i * 100, 250);
+                AddSymet(symet);
+            }
+            for (int i = 0; i < 10; i++)
             {
                 symet = dna2.BuildDNA();
                 symet.Position = new Vector2(50 + i * 100, 300);
+                AddSymet(symet);
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                symet = dna1.BuildDNA();
+                symet.Position = new Vector2(50 + i * 100, 350);
+                AddSymet(symet);
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                symet = dna2.BuildDNA();
+                symet.Position = new Vector2(50 + i * 100, 400);
+                AddSymet(symet);
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                symet = dna1.BuildDNA();
+                symet.Position = new Vector2(50 + i * 100, 450);
+                AddSymet(symet);
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                symet = dna2.BuildDNA();
+                symet.Position = new Vector2(50 + i * 100, 500);
+                AddSymet(symet);
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                symet = dna1.BuildDNA();
+                symet.Position = new Vector2(50 + i * 100, 550);
+                AddSymet(symet);
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                symet = dna2.BuildDNA();
+                symet.Position = new Vector2(50 + i * 100, 600);
+                AddSymet(symet);
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                symet = dna1.BuildDNA();
+                symet.Position = new Vector2(50 + i * 100, 650);
                 AddSymet(symet);
             }
 
@@ -91,6 +157,9 @@ namespace Emergence
 
         public int Update(GameTime gameTime)
         {
+            //Vector2 mousePosition = new Vector2();
+            //mousePosition.X = Mouse.GetState().X;
+            //mousePosition.Y = Mouse.GetState().Y;
 
             for (int i = 0; i < symets.Count; i++)
             {
@@ -105,7 +174,7 @@ namespace Emergence
                     symets[i].Scale /= 1.01f;
 
                 // Update all the symets
-                if (!Game1.GetGlobals().Editing)
+                if (!Game1.Globals.Editing)
                 { 
                     symets[i].Update(gameTime); 
                 }

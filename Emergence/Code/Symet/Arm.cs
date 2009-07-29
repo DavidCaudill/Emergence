@@ -73,30 +73,26 @@ namespace Emergence
         }
         public Vector2 Position
         {
-            get
-            {
-                return this.position;
-            }
             set
             {
-                this.position = value;
-
                 foreach (Segment segment in segments.Values)
                     segment.Position = value;
             }
         }
         public double Rotation
         {
-            get
-            {
-                return this.rotation;
-            }
             set
             {
-                this.rotation = value;
-
                 foreach (Segment segment in segments.Values)
                     segment.Rotation = value;
+            }
+        }
+        public float Scale
+        {
+            set
+            {
+                foreach (Segment segment in segments.Values)
+                    segment.Scale = value;
             }
         }
 
@@ -212,6 +208,8 @@ namespace Emergence
         // Recursive function that adds vertices along the outisde of the alive parts of the arm into a list
         public List<ShapeBuilderVertice> RecursiveSkeletonBuilder(int segmentID, Color parentColor)
         {
+            segments[segmentID].Collidable = false;
+
             List<ShapeBuilderVertice> tempVertices = new List<ShapeBuilderVertice>();
 
             if (!segments[segmentID].Alive)
@@ -226,7 +224,11 @@ namespace Emergence
             foreach (int faceID in segments[segmentID].Faces.Keys)
             {
                 if (segments[segmentID].Faces[faceID] == -1)
+                {
                     tempVertices.Add(new ShapeBuilderVertice(segments[segmentID].Vertices[faceID - 1], Symet.GetColor(segments[segmentID].Type)));
+                    // Also mark it as being collidable
+                    segments[segmentID].Collidable = true;
+                }
                 else
                     tempVertices.AddRange(RecursiveSkeletonBuilder(segments[segmentID].Faces[faceID], Symet.GetColor(segments[segmentID].Type)));
             }
@@ -314,6 +316,21 @@ namespace Emergence
             center /= segments[segmentID].Vertices.Count;
 
             return center;
+        }
+
+        public List<SegmentShape> GetCollidableShapes()
+        {
+            List<SegmentShape> shapes = new List<SegmentShape>();
+
+            foreach (Segment segment in segments.Values)
+            {
+                if (segment.Collidable)
+                {
+                    shapes.Add(new SegmentShape(this.ID, segment.ID, segment.Type, segment.Shape));
+                }
+            }
+
+            return shapes;
         }
     }
 }

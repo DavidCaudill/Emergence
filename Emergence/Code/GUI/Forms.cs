@@ -209,7 +209,7 @@ namespace Emergence
             spnMutRate.Maximum = 10;
             spnMutRate.Minimum = 0;
             spnMutRate.Rounding = 0;
-            spnMutRate.Value = Game1.GetGlobals().MutationRate;
+            spnMutRate.Value = Game1.Globals.MutationRate;
             spnMutRate.Step = 1;
             spnMutRate.Passive = true;
             spnMutRate.Text = Convert.ToString(spnMutRate.Value);
@@ -235,7 +235,7 @@ namespace Emergence
             spnSolar.Minimum = 0;
             spnSolar.Rounding = 0;
             spnSolar.Step = 1;
-            spnSolar.Value = Game1.GetGlobals().SolarIntensity;
+            spnSolar.Value = Game1.Globals.SolarIntensity;
             spnSolar.Passive = true;
             spnSolar.Text = Convert.ToString(spnSolar.Value);
             spnSolar.Parent = wndSettings;
@@ -260,7 +260,7 @@ namespace Emergence
             spnLifeSpan.Minimum = 0;
             spnLifeSpan.Rounding = 0;
             spnLifeSpan.Step = 1;
-            spnLifeSpan.Value = Game1.GetGlobals().SymetLifespan;
+            spnLifeSpan.Value = Game1.Globals.SymetLifespan;
             spnLifeSpan.Passive = true;
             spnLifeSpan.Text = Convert.ToString(spnLifeSpan.Value);
             spnLifeSpan.Parent = wndSettings;
@@ -285,7 +285,7 @@ namespace Emergence
             spnSpeed.Minimum = 0;
             spnSpeed.Rounding = 0;
             spnSpeed.Step = 1;
-            spnSpeed.Value = Game1.GetGlobals().SymetSpeed;
+            spnSpeed.Value = Game1.Globals.SymetSpeed;
             spnSpeed.Text = Convert.ToString(spnSpeed.Value);
             spnSpeed.Passive = true;
             spnSpeed.Parent = wndSettings;
@@ -311,13 +311,13 @@ namespace Emergence
         public void Tool_Click(object sender, MouseEventArgs e)
         {
             if (radStimulant.Checked)
-                Game1.GetGlobals().Tool="Stimulant";
+                Game1.Globals.Tool="Stimulant";
             if (radPoison.Checked)
-                Game1.GetGlobals().Tool="Poison";
+                Game1.Globals.Tool="Poison";
             if (radMutigen.Checked)
-                Game1.GetGlobals().Tool="Mutigen";
+                Game1.Globals.Tool="Mutigen";
             if (radGrab.Checked)
-                Game1.GetGlobals().Tool="Grab";
+                Game1.Globals.Tool="Grab";
 
         }
 
@@ -328,14 +328,14 @@ namespace Emergence
 
         public void btnEdit_Click(object sender, MouseEventArgs e)
         {
-            if (!Game1.GetGlobals().Editing)
+            if (!Game1.Globals.Editing)
             {
-                Game1.GetGlobals().Editing = true;
+                Game1.Globals.Editing = true;
                 btnEdit.Text = "Done";
             }
             else
             {
-                Game1.GetGlobals().Editing = false;
+                Game1.Globals.Editing = false;
                 btnEdit.Text= "Edit";
             }
         }

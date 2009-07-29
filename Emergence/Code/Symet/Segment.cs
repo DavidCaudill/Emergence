@@ -7,6 +7,22 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Emergence
 {
+    public struct SegmentShape
+    {
+        public int arm;
+        public int segment;
+        public SegmentType type;
+        public PrimitiveShape shape;
+
+        public SegmentShape(int arm, int segment, SegmentType type, PrimitiveShape shape)
+        {
+            this.arm = arm;
+            this.segment = segment;
+            this.type = type;
+            this.shape = shape;
+        }
+    }
+
     class Segment
     {
         // Attributes
@@ -17,15 +33,22 @@ namespace Emergence
         int parentID;
         int parentFace;
         Dictionary<int, int> faces; // <face id, segment id attached>
-        Vector2 position;
-        double rotation;
         SegmentType type;
         int hitPoints;
         int maxHitPoints;
         float volume;
+        bool collidable;
+        PrimitiveShape shape;
 
         # region Properties
 
+        public PrimitiveShape Shape
+        {
+            get
+            {
+                return this.shape;
+            }
+        }
         public List<Vector2> Vertices
         {
             get
@@ -90,24 +113,24 @@ namespace Emergence
         }
         public Vector2 Position
         {
-            get
-            {
-                return this.position;
-            }
+
             set
             {
-                this.position = value;               
+                shape.Position = value;          
             }
         }
         public double Rotation
         {
-            get
-            {
-                return this.rotation;
-            }
             set
             {
-                this.rotation = value;              
+                shape.Rotation = Convert.ToSingle(value);
+            }
+        }
+        public float Scale
+        {
+            set
+            {
+                shape.Scale = value;
             }
         }
         public Dictionary<int, int> Faces
@@ -154,6 +177,17 @@ namespace Emergence
                 this.volume = value;
             }
         }
+        public bool Collidable
+        {
+            get
+            {
+                return this.collidable;
+            }
+            set
+            {
+                this.collidable = value;
+            }
+        }
 
         #endregion
 
@@ -172,6 +206,8 @@ namespace Emergence
             this.faces = new Dictionary<int, int>();
             this.type = type;
 
+            collidable = false;
+
             // Set up the faces
             for (int i = 1; i < this.vertices.Count; i++)
             {
@@ -181,6 +217,8 @@ namespace Emergence
             this.alive = true;
 
             this.volume = Symet.CalculateArea(vertices);
+
+            shape = new PrimitiveShape(this.vertices.ToArray(), Color.White, DrawType.LineStrip);
             
             maxHitPoints = Convert.ToInt32(volume * 5);
             hitPoints = maxHitPoints;
@@ -188,7 +226,7 @@ namespace Emergence
 
         public int Update(GameTime gameTime)
         {
-
+            shape.Update();
             return 1;
         }
     }

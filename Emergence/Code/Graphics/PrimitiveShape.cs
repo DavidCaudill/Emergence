@@ -104,13 +104,28 @@ namespace Emergence
 		}
 
         public PrimitiveShape(Vector2[] vertices, Color[] lineColor, DrawType type)
-		{
-			this.vertices = (Vector2[])vertices.Clone();
-			this.transformedVertices = new Vector2[vertices.Length];
+        {
+            this.vertices = (Vector2[])vertices.Clone();
+            this.transformedVertices = new Vector2[vertices.Length];
             this.type = type;
             this.lineColor = lineColor;
-			CalculatePointsAndBounds();
-		}
+            CalculatePointsAndBounds();
+        }
+
+        public PrimitiveShape(Vector2[] vertices, Color color, DrawType type)
+        {
+            this.vertices = (Vector2[])vertices.Clone();
+            this.transformedVertices = new Vector2[vertices.Length];
+            this.type = type;
+
+            List<Color> temp = new List<Color>();
+            foreach (Vector2 vertice in this.vertices)
+            {
+                temp.Add(color);
+            }
+            this.lineColor = temp.ToArray();
+            CalculatePointsAndBounds();
+        }
 
         public void Update()
         {
@@ -216,11 +231,18 @@ namespace Emergence
             return hits;
         }
 
+        public static bool TestCollisionSimple(PrimitiveShape shape1, PrimitiveShape shape2)
+        {
+            if (shape1.Bounds.Intersects(shape2.Bounds))
+                return true;
+            return false;
+        }
+
         public static bool TestCollision(PrimitiveShape shape1, PrimitiveShape shape2)
         {
             if (shape1.Bounds.Intersects(shape2.Bounds))
             {
-                //return true;
+                //return false;
                 //simple check if the first polygon contains any points from the second
                 for (int i = 0; i < shape2.transformedVertices.Length; i++)
                     if (shape1.ContainsPoint(shape2.transformedVertices[i]))
@@ -231,7 +253,7 @@ namespace Emergence
                     if (shape2.ContainsPoint(shape1.transformedVertices[i]))
                         return true;
 
-                return true;
+                return false;
                 //now we have to check for line segment intersections
                 for (int i = 0; i < shape1.transformedVertices.Length; i++)
                 {

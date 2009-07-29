@@ -41,8 +41,21 @@ namespace Emergence
 
         int worldID;
 
+        List<SegmentShape> collidableShapes = new List<SegmentShape>();
+
         # region Properties
 
+        public List<SegmentShape> CollidableShapes
+        {
+            get
+            {
+                return this.collidableShapes;
+            }
+            set
+            {
+                this.collidableShapes = value;
+            }
+        }
         public PrimitiveShape Skeleton
         {
             get
@@ -98,6 +111,9 @@ namespace Emergence
                 this.position = value;
                 skeleton.Position = value;
                 segmentDividers.Position = value;
+
+                foreach (Arm arm in arms.Values)
+                    arm.Position = value;
             }
         }
 
@@ -123,6 +139,9 @@ namespace Emergence
                 this.rotation = value;
                 skeleton.Rotation = Convert.ToSingle(value);
                 segmentDividers.Rotation = Convert.ToSingle(value);
+
+                foreach (Arm arm in arms.Values)
+                    arm.Rotation = value;
             }
         }
         public float Scale
@@ -140,6 +159,9 @@ namespace Emergence
                 this.scale = value;
                 skeleton.Scale = value;
                 segmentDividers.Scale = value;
+
+                foreach (Arm arm in arms.Values)
+                    arm.Scale = value;
             }
         }
         public bool Alive
@@ -172,7 +194,7 @@ namespace Emergence
             this.energy = 9999;
             this.hitPoints = 100;
             this.scale = 1;
-            this.rotation = Game1.GetRandom().NextDouble() * 2 * Math.PI;
+            this.rotation = Game1.Random.NextDouble() * 2 * Math.PI;
             this.velocity = new Vector2(0,0);
             this.angularVelocity = 0;
 
@@ -190,6 +212,12 @@ namespace Emergence
             maxHitPoints = Convert.ToInt32(volume * 5);
             hitPoints = maxHitPoints;
 
+            // Set the id of the arms
+            foreach (int id in arms.Keys)
+            {
+                arms[id].ID = id;
+            }
+
             // Get a list of our movement segment IDs to use for movment in Update()
             movementSegments = new List<int>();
             foreach(Chromosome chromosome in dna.Chromosomes.Values)
@@ -199,21 +227,21 @@ namespace Emergence
             }
 
             // Get a random postition for the timers
-            lastMovementFire = Convert.ToInt32(Game1.GetRandom().NextDouble() * dna.MovementFrequency * 1000);
-            lastRegen = Convert.ToInt32(Game1.GetRandom().NextDouble() * 1000);
+            lastMovementFire = Convert.ToInt32(Game1.Random.NextDouble() * dna.MovementFrequency * 1000);
+            lastRegen = Convert.ToInt32(Game1.Random.NextDouble() * 1000);
 
             // This will make their patterns have random starting positisions, ones that they would most likly not be able to achieve normally
-            //lastMovementSegment = Convert.ToSingle(Game1.GetRandom().NextDouble() * movementSegments.Count());
-            //lastMovementArm = Convert.ToSingle(Game1.GetRandom().NextDouble() * arms.Count());
+            //lastMovementSegment = Convert.ToSingle(Game1.Random.NextDouble() * movementSegments.Count());
+            //lastMovementArm = Convert.ToSingle(Game1.Random.NextDouble() * arms.Count());
             
             //while (lastMovementArm < .5)
-            //    lastMovementArm = Convert.ToSingle(Game1.GetRandom().NextDouble() * arms.Count() );
+            //    lastMovementArm = Convert.ToSingle(Game1.Random.NextDouble() * arms.Count() );
             //while (lastMovementSegment < .5)
-            //    lastMovementSegment = Convert.ToSingle(Game1.GetRandom().NextDouble() * movementSegments.Count());
+            //    lastMovementSegment = Convert.ToSingle(Game1.Random.NextDouble() * movementSegments.Count());
 
             // This will make their starting positions appear on their pattern somewhere, make it a lot less random
             int randomNumber;
-            randomNumber = Game1.GetRandom().Next(100);
+            randomNumber = Game1.Random.Next(100);
             lastMovementSegment = .5f;
             for (int i = 0; i < randomNumber; i++)
             {
@@ -222,7 +250,7 @@ namespace Emergence
                     lastMovementSegment -= Convert.ToSingle(movementSegments.Count - .00002f);
             }
 
-            randomNumber = Game1.GetRandom().Next(100);
+            randomNumber = Game1.Random.Next(100);
             lastMovementArm = .5f;
             for (int i = 0; i < randomNumber; i++)
             {
@@ -310,10 +338,10 @@ namespace Emergence
             skeleton.Draw(primitiveBatch);
             segmentDividers.Draw(primitiveBatch);
 
+            //This code will draw white boxes around the symet
             //List<Vector2> vertices = new List<Vector2>();
             //List<Color> colors = new List<Color>();
-
-            // This code will draw white boxes around the symet
+ 
             //vertices.Add(new Vector2(skeleton.Bounds.l, skeleton.Bounds.t));
             //vertices.Add(new Vector2(skeleton.Bounds.r, skeleton.Bounds.t));
             //vertices.Add(new Vector2(skeleton.Bounds.r, skeleton.Bounds.b));
@@ -326,7 +354,6 @@ namespace Emergence
             //bounds.Draw(primitiveBatch);
             return 1;
         }
-
 
         private int DoMovement(GameTime gameTime)
         {
@@ -393,6 +420,7 @@ namespace Emergence
             return Math.Atan2(verticeTwo.Y - verticeOne.Y, verticeTwo.X - verticeOne.X);
         }
 
+        // Builds a shape that outlines the whole symet
         public int BuildSkeleton()
         {
             skeletalVertices = new List<ShapeBuilderVertice>();
@@ -455,7 +483,21 @@ namespace Emergence
             segmentDividers.Rotation = Convert.ToSingle(rotation);
             segmentDividers.Scale = scale;
 
+            collidableShapes = GetSegmentShapes();
+
             return 1;
+        }
+
+        public List<SegmentShape> GetSegmentShapes()
+        {
+            List<SegmentShape> shapes = new List<SegmentShape>();
+
+            foreach (Arm arm in arms.Values)
+            {
+                shapes.AddRange(arm.GetCollidableShapes());
+            }
+
+            return shapes;
         }
 
         // Calculate the area of this segment

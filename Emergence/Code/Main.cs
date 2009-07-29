@@ -28,13 +28,28 @@ namespace Emergence
         static Random random;
         static Settings globals;
 
-        public static Random GetRandom()
+        public static Random Random
         {
-            return random;
+            get
+            {
+                return random;
+            }
+            set
+            {
+                random = value;
+            }
         }
-        public static Settings GetGlobals()
+
+        public static Settings Globals
         {
-            return globals;
+            get
+            {
+                return globals;
+            }
+            set
+            {
+                globals = value;
+            }
         }
 
         public Game1()
@@ -53,7 +68,7 @@ namespace Emergence
 
             IsMouseVisible = true;
             IsFixedTimeStep = true;
-            TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 1000 / 20);
+            TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 1000 / 30);
             
             graphics.SynchronizeWithVerticalRetrace = false;
 
@@ -73,7 +88,7 @@ namespace Emergence
 
         protected override void LoadContent()
         {
-            Game1.GetGlobals().Load();
+            Game1.Globals.Load();
             spriteBatch = new SpriteBatch(GraphicsDevice);
             primitiveBatch = new PrimitiveBatch(GraphicsDevice);
         }

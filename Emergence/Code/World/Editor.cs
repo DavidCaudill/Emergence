@@ -41,20 +41,20 @@ namespace Emergence
                 {
                     if (ActiveID == symet[i].WorldID)
                     {
-                        if (Game1.GetGlobals().Tool == "Grab")
+                        if (Game1.Globals.Tool == "Grab")
                         {
                             symet[i].Position = mousePosition;
                             symet[i].GrabUpdate();
                         }
-                        if (Game1.GetGlobals().Tool == "Stimulant")
+                        if (Game1.Globals.Tool == "Stimulant")
                         {
                             symet[i].AngularVelocity *= 1.001f;
                         }
-                        if (Game1.GetGlobals().Tool == "Poison")
+                        if (Game1.Globals.Tool == "Poison")
                         {
                             symet[i].Alive = false;
                         }
-                        if (Game1.GetGlobals().Tool == "Mutigen")
+                        if (Game1.Globals.Tool == "Mutigen")
                         {
                             symet[i].Scale *= 1.001f;
                             symet[i].GrabUpdate();
